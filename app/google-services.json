@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "678346303967",
+    "firebase_url": "https://publicchain-26787.firebaseio.com",
+    "project_id": "publicchain-26787",
+    "storage_bucket": "publicchain-26787.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:678346303967:android:9d8c4e4dc995c9dd",
+        "android_client_info": {
+          "package_name": "com.gomsang.lab.publicchain"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "678346303967-rt5ibpn85mu1mhhfk8s5hta94n7mue32.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gomsang.lab.publicchain",
+            "certificate_hash": "64328e3fa2174f62165da8788f75efde5df158c6"
+          }
+        },
+        {
+          "client_id": "678346303967-l2nt1l7p8p0eh14lb5bjukkvc5aavnrk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpKpfz4DM2Z6bT_Vd0qrRWIura1E1_mPQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "678346303967-l2nt1l7p8p0eh14lb5bjukkvc5aavnrk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
