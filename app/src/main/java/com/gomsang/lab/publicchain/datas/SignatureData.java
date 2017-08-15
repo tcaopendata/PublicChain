@@ -8,21 +8,32 @@ public class SignatureData {
     public String campaignUUID;
     public String signerToken;
     public String message;
+    public double value;
 
     public Long signTime;
 
     public SignatureData() {
     }
 
-    public SignatureData(String campaignUUID, String signerToken, String message) {
-        this.signTime = System.currentTimeMillis();
+
+    public SignatureData(String campaignUUID, String signerToken, String message, double value) {
         this.campaignUUID = campaignUUID;
         this.signerToken = signerToken;
         this.message = message;
+        this.value = value;
+        this.signTime = System.currentTimeMillis();
     }
 
     public Long getSignTime() {
         return signTime;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
     }
 
     public void setSignTime(Long signTime) {

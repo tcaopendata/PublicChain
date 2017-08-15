@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity
                         ((TextView) headerView.findViewById(R.id.usernameTextView)).setText(currentAuthData.getName());
                         ((TextView) headerView.findViewById(R.id.emailTextView)).setText(currentAuthData.getEmail());
 
-                        Toast.makeText(MainActivity.this, "recognize | Hello! " + currentAuthData.getName(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "auth | Hello! " + currentAuthData.getName(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity
         map.setMyLocationEnabled(true);
         map.setOnMapLongClickListener((LatLng latLng) -> {
             if (currentAuthData != null) {
-                OpenCampaignDialog openCampaignDialog = new OpenCampaignDialog(MainActivity.this, currentAuthData.getIdentifyToken(), latLng);
+                OpenCampaignDialog openCampaignDialog = new OpenCampaignDialog(MainActivity.this, currentAuthData.getPublicToken(), latLng);
                 openCampaignDialog.show();
             }else{
                 startActivity(new Intent(MainActivity.this, AuthActivity.class));
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity
 
         database.child("campaigns").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChi`ldAdded(DataSnapshot dataSnapshot, String s) {
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 CampaignData campaignData = dataSnapshot.getValue(CampaignData.class);
                 if (campaignData == null) return;
 

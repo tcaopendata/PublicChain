@@ -29,6 +29,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Gyeongrok Kim on 2017-08-09.
  */
@@ -68,8 +71,8 @@ public class CampaignDialog extends Dialog {
             binding.attachImageView.setVisibility(View.VISIBLE);
             GlideApp.with(context).load(campaignData.getAttachImage()).centerCrop().into(binding.attachImageView);
         }
+
         binding.descTextView.setText(campaignData.getDesc());
-        binding.goalOfSignTextView.setText(String.format("%,d", campaignData.getGoalOfSignature()));
 
         binding.signButton.setOnClickListener(view -> {
             if (currentAuthData != null) {
@@ -81,39 +84,86 @@ public class CampaignDialog extends Dialog {
             }
         });
 
-        database.child("signatures").orderByChild("campaignUUID").equalTo(campaignData.getUuid())
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        if (dataSnapshot == null) return;
-                        SignatureData signatureData = dataSnapshot.getValue(SignatureData.class);
-                        if (signatureData.getSignerToken().equals(currentAuthData.getIdentifyToken())) {
-                            binding.signButton.setText("SIGNED IN : " + signatureData.getSignTime());
-                            binding.signButton.setEnabled(false);
-                        }
-                    }
+        // 서명 달성률 표시
+        binding.statusTextView.setText("Achieve " + 0 +
+                " / " + (campaignData.isFunding() ? campaignData.getGoalOfContribution() :
+                String.format("%,d", campaignData.getGoalOfSignature())));
+        binding.statusProgressBar.setMax(campaignData.isFunding() ? (int) campaignData.getGoalOfContribution() : campaignData.getGoalOfSignature());
 
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+        // 서명 실 달성률 (실 서명 개수) 로드
+        database.child("signatures").orderByKey().equalTo(campaignData.getUuid()).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                binding.statusTextView.setText("Achieve " + String.format("%,d", dataSnapshot.getChildrenCount()) +
+                        " / " + String.format("%,d", campaignData.getGoalOfSignature()));
+                binding.statusProgressBar.setProgress((int) dataSnapshot.getChildrenCount());
+            }
 
-                    }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                binding.statusTextView.setText("Achieve " + String.format("%,d", dataSnapshot.getChildrenCount()) +
+                        " / " + String.format("%,d", campaignData.getGoalOfSignature()));
+                binding.statusProgressBar.setProgress((int) dataSnapshot.getChildrenCount());
+            }
 
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                    }
+            }
 
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-                    }
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+            }
+        });
+
+        database.child("signatures").child(campaignData.getUuid()).orderByChild("signerToken")
+                .equalTo(currentAuthData.getPublicToken()).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                SignatureData signatureData = dataSnapshot.getValue(SignatureData.class);
+
+                Date signTime = new Date(signatureData.getSignTime());
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+                binding.signButton.setEnabled(false);
+                binding.signButton.setBackgroundColor(Color.GRAY);
+                binding.signButton.setText("signed in " + sdf.format(signTime));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
+
+    private void updateSignProgress(int progress) {
+        binding.statusTextView.setText("Achieve " + String.format("%,d", progress) +
+                " / " + String.format("%,d", campaignData.getGoalOfSignature()));
+        binding.statusProgressBar.setProgress(progress);
+    }
+
 
     private void setDialogSize(int width, int height) {
         WindowManager.LayoutParams params = this.getWindow().getAttributes();

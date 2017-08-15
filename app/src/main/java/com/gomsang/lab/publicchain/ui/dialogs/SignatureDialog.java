@@ -20,8 +20,6 @@ import com.gomsang.lab.publicchain.datas.SignatureData;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.UUID;
-
 /**
  * Created by Gyeongrok Kim on 2017-08-09.
  */
@@ -54,9 +52,17 @@ public class SignatureDialog extends Dialog {
         setDialogSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         binding.confirmButton.setOnClickListener(view -> {
+            // 후원금 금액을 받아오는 중 예외처리
+            final String donationFeeText = binding.donationEditText.getText().toString();
+            double donationFee = 0;
+            if (donationFeeText != null && donationFeeText.length() != 0) {
+                donationFee = Double.parseDouble(donationFeeText);
+            }
+
             SignatureData signatureData = new SignatureData(campaignData.getUuid(),
-                    currentAuthData.getIdentifyToken(), binding.messageEditText.getText().toString());
-            database.child("signatures").child(UUID.randomUUID().toString()).setValue(signatureData);
+                    currentAuthData.getPublicToken(), binding.messageEditText.getText().toString(), donationFee);
+
+            database.child("signatures").child(campaignData.getUuid()).push().setValue(signatureData);
             Toast.makeText(context, "signature process complete", Toast.LENGTH_SHORT).show();
             dismiss();
         });

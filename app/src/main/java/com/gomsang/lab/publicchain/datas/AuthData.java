@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class AuthData {
 
-    private String identifyToken;
+    private String publicToken;
     // private token for recover
     private String privateToken;
     private String name;
@@ -19,8 +19,8 @@ public class AuthData {
     public AuthData() {
     }
 
-    public AuthData(String identifyToken, String name, String email, String address, String phone) {
-        this.identifyToken = identifyToken;
+    public AuthData(String publicToken, String name, String email, String address, String phone) {
+        this.publicToken = publicToken;
         this.privateToken = UUID.randomUUID().toString();
         this.name = name;
         this.email = email;
@@ -28,8 +28,8 @@ public class AuthData {
         this.phone = phone;
     }
 
-    public String getIdentifyToken() {
-        return identifyToken;
+    public String getPublicToken() {
+        return publicToken;
     }
 
     public String getPrivateToken() {
