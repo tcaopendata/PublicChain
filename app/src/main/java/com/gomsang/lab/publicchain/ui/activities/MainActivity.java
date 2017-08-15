@@ -26,6 +26,7 @@ import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.libs.Constants;
 import com.gomsang.lab.publicchain.libs.utils.VerifyUtil;
 import com.gomsang.lab.publicchain.ui.dialogs.CampaignDialog;
+import com.gomsang.lab.publicchain.ui.dialogs.CurrentCampaignsDialog;
 import com.gomsang.lab.publicchain.ui.dialogs.OpenCampaignDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     private ActivityMainBinding binding;
     private DatabaseReference database;
     private MenuItem signUpMenuItem;
+    private MenuItem usersMenuItem;
     private AuthData currentAuthData;
 
     private HashMap<Marker, CampaignData> campaigns = new HashMap<>();
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity
 
                         // 네비게이션 메뉴단의 정보를 업데이트 합니다.
                         signUpMenuItem.setVisible(false);
+                        usersMenuItem.setVisible(true);
                         View headerView = binding.navView.getHeaderView(0);
                         ((TextView) headerView.findViewById(R.id.usernameTextView)).setText(currentAuthData.getName());
                         ((TextView) headerView.findViewById(R.id.emailTextView)).setText(currentAuthData.getEmail());
@@ -100,9 +103,14 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        binding.parentPanel.fab.setOnClickListener((View view) ->
+        binding.parentPanel.fab.setOnClickListener((
+                View view) ->
                 Snackbar.make(view, "Long-click a place on the map where you want to start your campaign", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show()
+                        .
+
+                                setAction("Action", null).
+
+                        show()
 
         );
 
@@ -113,18 +121,21 @@ public class MainActivity extends AppCompatActivity
         binding.navView.setNavigationItemSelectedListener(this);
 
         signUpMenuItem = binding.navView.getMenu().findItem(R.id.nav_signin);
+        usersMenuItem = binding.navView.getMenu().findItem(R.id.nav_users);
+
         if (currentAuthData != null) {
             signUpMenuItem.setVisible(false);
+            usersMenuItem.setVisible(true);
         } else {
             signUpMenuItem.setVisible(true);
+            usersMenuItem.setVisible(false);
         }
 
 
-        new TedPermission(this)
-                .setPermissionListener(permissionlistener)
+        new TedPermission(this).setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check();
     }
 
@@ -147,18 +158,39 @@ public class MainActivity extends AppCompatActivity
             if (currentAuthData != null) {
                 OpenCampaignDialog openCampaignDialog = new OpenCampaignDialog(MainActivity.this, currentAuthData.getPublicToken(), latLng);
                 openCampaignDialog.show();
-            }else{
+            } else {
                 startActivity(new Intent(MainActivity.this, AuthActivity.class));
                 Toast.makeText(MainActivity.this, "require registration for open campaign", Toast.LENGTH_SHORT).show();
             }
         });
         map.setOnMarkerClickListener(marker -> {
-                    final CampaignData campaignData = campaigns.get(marker);
-                    CampaignDialog campaignDialog = new CampaignDialog(MainActivity.this, campaignData, currentAuthData);
-                    campaignDialog.show();
+                    if (currentAuthData != null) {
+                        final CampaignData campaignData = campaigns.get(marker);
+                        CampaignDialog campaignDialog = new CampaignDialog(MainActivity.this, campaignData, currentAuthData);
+                        campaignDialog.show();
+                    } else {
+                        startActivity(new Intent(MainActivity.this, AuthActivity.class));
+                        Toast.makeText(MainActivity.this, "require registration for see campaign", Toast.LENGTH_SHORT).show();
+                    }
                     return false;
                 }
         );
+
+
+      /*  JSONArray jsonArray = LoadUtils.getToiletsJsonArray(this);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(new LatLng(jsonObject.getDouble("latitude"), jsonObject.getDouble("longitude")))
+                        .title(jsonObject.getString("name"));
+
+                Marker newMarker = map.addMarker(markerOptions);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }*/
+
 
         database.child("campaigns").addChildEventListener(new ChildEventListener() {
             @Override
@@ -213,7 +245,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if (binding.drawerLayout. isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
@@ -251,6 +283,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_signin:
                 startActivity(new Intent(MainActivity.this, AuthActivity.class));
                 break;
+            case R.id.nav_campaigns:
+                CurrentCampaignsDialog currentCampaignsDialog = new CurrentCampaignsDialog(MainActivity.this, currentAuthData);
+                currentCampaignsDialog.show();
         }
 
         binding.drawerLayout.closeDrawer(GravityCompat.START);

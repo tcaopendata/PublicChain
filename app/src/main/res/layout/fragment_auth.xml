@@ -56,7 +56,8 @@
     <TextView
         android:id="@+id/recoverButton"
         android:layout_width="wrap_content"
-        android:layout_height="15dp"
+        android:layout_height="14dp"
+        android:visibility="invisible"
         android:text="recover registration data"
         android:textColor="@color/brightColor"
         android:layout_marginTop="16dp"

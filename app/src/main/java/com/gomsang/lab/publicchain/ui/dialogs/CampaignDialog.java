@@ -72,6 +72,11 @@ public class CampaignDialog extends Dialog {
             GlideApp.with(context).load(campaignData.getAttachImage()).centerCrop().into(binding.attachImageView);
         }
 
+        binding.statusTextView.setOnClickListener((View view) -> {
+            CurrentSignaturesDialog currentSignaturesDialog = new CurrentSignaturesDialog(context, campaignData);
+            currentSignaturesDialog.show();
+        });
+
         binding.descTextView.setText(campaignData.getDesc());
 
         binding.signButton.setOnClickListener(view -> {

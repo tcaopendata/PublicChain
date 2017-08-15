@@ -8,6 +8,7 @@ public class SignatureData {
     public String campaignUUID;
     public String signerToken;
     public String message;
+    public String status;
     public double value;
 
     public Long signTime;
@@ -21,7 +22,17 @@ public class SignatureData {
         this.signerToken = signerToken;
         this.message = message;
         this.value = value;
+
         this.signTime = System.currentTimeMillis();
+        this.status = "pending";
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getSignTime() {

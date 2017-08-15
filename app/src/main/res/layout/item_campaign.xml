@@ -8,11 +8,11 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/messageTextView"
+            android:id="@+id/campaignTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
-            android:text="message"
+            android:text="name"
             android:textSize="18dp" />
 
         <LinearLayout
@@ -27,20 +27,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="08, 15, 2017" />
-
-            <TextView
-                android:id="@+id/statusTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="status" />
-
-            <TextView
-                android:id="@+id/donationTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0.0 ETH" />
 
         </LinearLayout>
     </LinearLayout>

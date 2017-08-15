@@ -114,6 +114,8 @@ public class OpenCampaignDialog extends Dialog {
         campaignData.setUuid(UUID.randomUUID().toString());
         campaignData.setAuthor(author);
 
+        campaignData.setSignTime(System.currentTimeMillis());
+
         campaignData.setName(name);
         campaignData.setDesc(desc);
         campaignData.setGoalOfSignature(Integer.parseInt(goalOfSign));

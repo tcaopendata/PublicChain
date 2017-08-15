@@ -10,7 +10,15 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
     }
+
+    dexOptions {
+        jumboMode true
+        javaMaxHeapSize "4g"
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -23,6 +31,11 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/rxjava.properties'
     }
 }
 
@@ -46,6 +59,10 @@ dependencies {
     implementation 'com.mlsdev.rximagepicker:library:2.0.0'
     implementation 'com.github.bumptech.glide:glide:4.0.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
+
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
+    implementation 'org.web3j:core-android:2.2.1'
+    implementation 'com.android.support:multidex:1.0.0'
 }
 
 

@@ -8,22 +8,15 @@
             android:id="@+id/nav_signin"
             android:icon="@drawable/ic_account_circle_black_24dp"
             android:title="Sign Up" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="users"
+        android:id="@+id/nav_users">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_campaigns"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="Your Campaigns" />
         </menu>
     </item>
 

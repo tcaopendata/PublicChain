@@ -19,7 +19,17 @@ public class CampaignData {
     private boolean isFunding;
     private double goalOfContribution;
 
+    private long signTime;
+
     public CampaignData() {
+    }
+
+    public long getSignTime() {
+        return signTime;
+    }
+
+    public void setSignTime(long signTime) {
+        this.signTime = signTime;
     }
 
     public String getAuthor() {
