@@ -85,25 +85,38 @@ public class CampaignDialog extends Dialog {
         });
 
         // 서명 달성률 표시
-        binding.statusTextView.setText("Achieve " + 0 +
-                " / " + (campaignData.isFunding() ? campaignData.getGoalOfContribution() :
-                String.format("%,d", campaignData.getGoalOfSignature())));
-        binding.statusProgressBar.setMax(campaignData.isFunding() ? (int) campaignData.getGoalOfContribution() : campaignData.getGoalOfSignature());
+        if (campaignData.isFunding()) {
+            updateSignProgress(0, campaignData.getGoalOfContribution());
+        } else {
+            updateSignProgress(0, campaignData.getGoalOfSignature());
+        }
 
         // 서명 실 달성률 (실 서명 개수) 로드
         database.child("signatures").orderByKey().equalTo(campaignData.getUuid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                binding.statusTextView.setText("Achieve " + String.format("%,d", dataSnapshot.getChildrenCount()) +
-                        " / " + String.format("%,d", campaignData.getGoalOfSignature()));
-                binding.statusProgressBar.setProgress((int) dataSnapshot.getChildrenCount());
+                if (campaignData.isFunding()) {
+                    double fundingsum = 0;
+                    for (DataSnapshot signature : dataSnapshot.getChildren()) {
+                        fundingsum += signature.child("value").getValue(Double.class);
+                    }
+                    updateSignProgress(fundingsum, campaignData.getGoalOfContribution());
+                } else {
+                    updateSignProgress((int) dataSnapshot.getChildrenCount(), campaignData.getGoalOfSignature());
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                binding.statusTextView.setText("Achieve " + String.format("%,d", dataSnapshot.getChildrenCount()) +
-                        " / " + String.format("%,d", campaignData.getGoalOfSignature()));
-                binding.statusProgressBar.setProgress((int) dataSnapshot.getChildrenCount());
+                if (campaignData.isFunding()) {
+                    double fundingsum = 0;
+                    for (DataSnapshot signature : dataSnapshot.getChildren()) {
+                        fundingsum += signature.child("value").getValue(Double.class);
+                    }
+                    updateSignProgress(fundingsum, campaignData.getGoalOfContribution());
+                } else {
+                    updateSignProgress((int) dataSnapshot.getChildrenCount(), campaignData.getGoalOfSignature());
+                }
             }
 
             @Override
@@ -158,10 +171,17 @@ public class CampaignDialog extends Dialog {
         });
     }
 
-    private void updateSignProgress(int progress) {
-        binding.statusTextView.setText("Achieve " + String.format("%,d", progress) +
-                " / " + String.format("%,d", campaignData.getGoalOfSignature()));
-        binding.statusProgressBar.setProgress(progress);
+    private void updateSignProgress(double progress, double max) {
+        if (campaignData.isFunding()) {
+            binding.statusTextView.setText("Achieve " + progress +
+                    " ETH / " + max + " ETH");
+        } else {
+            binding.statusTextView.setText("Achieve " + (int) progress +
+                    " / " + (int) max);
+        }
+
+        binding.statusProgressBar.setProgress((int) progress);
+        binding.statusProgressBar.setMax((int) max);
     }
 
 

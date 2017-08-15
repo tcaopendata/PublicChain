@@ -51,6 +51,7 @@ public class SignatureDialog extends Dialog {
         setContentView(binding.getRoot());
         setDialogSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
+        binding.campaignNameTextView.setText("Sign to " + campaignData.getName());
         binding.confirmButton.setOnClickListener(view -> {
             // 후원금 금액을 받아오는 중 예외처리
             final String donationFeeText = binding.donationEditText.getText().toString();
