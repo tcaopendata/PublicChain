@@ -63,6 +63,9 @@ dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
     implementation 'org.web3j:core-android:2.2.1'
     implementation 'com.android.support:multidex:1.0.0'
+
+    implementation 'com.firebase:geofire-android:2.1.1'
+
 }
 
 

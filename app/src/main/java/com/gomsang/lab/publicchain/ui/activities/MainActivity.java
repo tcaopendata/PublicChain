@@ -19,6 +19,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.ActivityMainBinding;
 import com.gomsang.lab.publicchain.datas.AuthData;
@@ -57,7 +61,11 @@ public class MainActivity extends AppCompatActivity
     private MenuItem usersMenuItem;
     private AuthData currentAuthData;
 
+    private GeoQuery currentGeoQuery;
+
+
     private HashMap<Marker, CampaignData> campaigns = new HashMap<>();
+    private HashMap<Marker, String> nearby = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +75,14 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(binding.parentPanel.toolbar);
         getSupportActionBar().setTitle("Public Chain");
+/*
+
+        Web3j web3 = Web3jFactory.build(new HttpService("http://nozzang.jubeat.ml:8545"));  // defaults to http://localhost:8545/
+        web3.web3ClientVersion().observable().subscribe(x -> {
+            String clientVersion = x.getWeb3ClientVersion();
+            Log.d("blockchain", clientVersion);
+        });
+*/
 
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
@@ -135,7 +151,7 @@ public class MainActivity extends AppCompatActivity
         new TedPermission(this).setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check();
     }
 
@@ -163,34 +179,68 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, "require registration for open campaign", Toast.LENGTH_SHORT).show();
             }
         });
+
         map.setOnMarkerClickListener(marker -> {
-                    if (currentAuthData != null) {
-                        final CampaignData campaignData = campaigns.get(marker);
-                        CampaignDialog campaignDialog = new CampaignDialog(MainActivity.this, campaignData, currentAuthData);
-                        campaignDialog.show();
-                    } else {
-                        startActivity(new Intent(MainActivity.this, AuthActivity.class));
-                        Toast.makeText(MainActivity.this, "require registration for see campaign", Toast.LENGTH_SHORT).show();
+
+                    if (campaigns.containsKey(marker)) {
+                        if (currentAuthData != null) {
+                            final CampaignData campaignData = campaigns.get(marker);
+                            CampaignDialog campaignDialog = new CampaignDialog(MainActivity.this, campaignData, currentAuthData);
+                            campaignDialog.show();
+                        } else {
+                            startActivity(new Intent(MainActivity.this, AuthActivity.class));
+                            Toast.makeText(MainActivity.this, "require registration for see campaign", Toast.LENGTH_SHORT).show();
+                        }
                     }
                     return false;
                 }
         );
 
-
-      /*  JSONArray jsonArray = LoadUtils.getToiletsJsonArray(this);
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .position(new LatLng(jsonObject.getDouble("latitude"), jsonObject.getDouble("longitude")))
-                        .title(jsonObject.getString("name"));
-
-                Marker newMarker = map.addMarker(markerOptions);
-            } catch (Exception e) {
-                e.printStackTrace();
+        map.setOnMapClickListener((LatLng latLng) -> {
+            for (Marker marker : nearby.keySet()) {
+                marker.remove();
             }
-        }*/
 
+            Toast.makeText(MainActivity.this, "search started", Toast.LENGTH_SHORT).show();
+
+            if (currentGeoQuery != null) currentGeoQuery.removeAllListeners();
+
+            DatabaseReference geoToilet = database.child("opendatas").child("toilets-geo");
+            GeoFire geoFire = new GeoFire(geoToilet);
+            GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude), 1);
+            currentGeoQuery = geoQuery;
+            geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                @Override
+                public void onKeyEntered(String key, GeoLocation location) {
+
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(new LatLng(location.latitude, location.longitude))
+                            .title(key)
+                            .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("marker_for_toilet")));
+                    nearby.put(map.addMarker(markerOptions), key);
+                }
+
+                @Override
+                public void onKeyExited(String key) {
+                    System.out.println(String.format("Key %s is no longer in the search area", key));
+                }
+
+                @Override
+                public void onKeyMoved(String key, GeoLocation location) {
+                    System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+                }
+
+                @Override
+                public void onGeoQueryReady() {
+                    System.out.println("All initial data has been loaded and events have been fired!");
+                }
+
+                @Override
+                public void onGeoQueryError(DatabaseError error) {
+                    System.err.println("There was an error with this query: " + error);
+                }
+            });
+        });
 
         database.child("campaigns").addChildEventListener(new ChildEventListener() {
             @Override
@@ -245,7 +295,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (binding.drawerLayout. isDrawerOpen(GravityCompat.START)) {
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
