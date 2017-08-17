@@ -61,11 +61,13 @@ public class MainActivity extends AppCompatActivity
     private MenuItem usersMenuItem;
     private AuthData currentAuthData;
 
-    private GeoQuery currentGeoQuery;
-
 
     private HashMap<Marker, CampaignData> campaigns = new HashMap<>();
     private HashMap<Marker, String> nearby = new HashMap<>();
+    private ArrayList<GeoQuery> geoQueries = new ArrayList<>();
+
+    int count = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +78,41 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(binding.parentPanel.toolbar);
         getSupportActionBar().setTitle("Public Chain");
 /*
-
+\
         Web3j web3 = Web3jFactory.build(new HttpService("http://nozzang.jubeat.ml:8545"));  // defaults to http://localhost:8545/
         web3.web3ClientVersion().observable().subscribe(x -> {
             String clientVersion = x.getWeb3ClientVersion();
             Log.d("blockchain", clientVersion);
         });
 */
+
+       /* JSONArray ARR = LoadUtils.getToiletsJsonArray(this);
+        DatabaseReference geoPark = database.child("opendatas").child("publics-geo");
+        geoPark.removeValue();
+        for (int a = 0; a < ARR.length(); a++) {
+            try {
+                JSONObject object = ARR.getJSONObject(a);
+                GeoFire geoFire = new GeoFire(geoPark);
+
+                try {
+                    geoFire.setLocation(object.getString("name"), new GeoLocation(object.getDouble("latitude"),
+                            object.getDouble("longitude")), new GeoFire.CompletionListener() {
+                        @Override
+                        public void onComplete(String key, DatabaseError error) {
+                            count++;
+                            Log.d("geoLogs", key + "|" + count);
+                        }
+                    });
+                }catch (Exception e){
+                    Log.d("geoLogs", e + "");
+
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d("geoLogs", e + "");
+            }
+        }*/
 
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
@@ -200,46 +230,16 @@ public class MainActivity extends AppCompatActivity
             for (Marker marker : nearby.keySet()) {
                 marker.remove();
             }
+            for (GeoQuery geoQuery : geoQueries){
+                geoQuery.removeAllListeners();
+            }
+            geoQueries.clear();
+
+            loadNearbyOpenData(map, latLng, "toilets");
+            loadNearbyOpenData(map, latLng, "parks");
+            loadNearbyOpenData(map, latLng, "publics");
 
             Toast.makeText(MainActivity.this, "search started", Toast.LENGTH_SHORT).show();
-
-            if (currentGeoQuery != null) currentGeoQuery.removeAllListeners();
-
-            DatabaseReference geoToilet = database.child("opendatas").child("toilets-geo");
-            GeoFire geoFire = new GeoFire(geoToilet);
-            GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude), 1);
-            currentGeoQuery = geoQuery;
-            geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-                @Override
-                public void onKeyEntered(String key, GeoLocation location) {
-
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .position(new LatLng(location.latitude, location.longitude))
-                            .title(key)
-                            .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("marker_for_toilet")));
-                    nearby.put(map.addMarker(markerOptions), key);
-                }
-
-                @Override
-                public void onKeyExited(String key) {
-                    System.out.println(String.format("Key %s is no longer in the search area", key));
-                }
-
-                @Override
-                public void onKeyMoved(String key, GeoLocation location) {
-                    System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
-                }
-
-                @Override
-                public void onGeoQueryReady() {
-                    System.out.println("All initial data has been loaded and events have been fired!");
-                }
-
-                @Override
-                public void onGeoQueryError(DatabaseError error) {
-                    System.err.println("There was an error with this query: " + error);
-                }
-            });
         });
 
         database.child("campaigns").addChildEventListener(new ChildEventListener() {
@@ -290,6 +290,44 @@ public class MainActivity extends AppCompatActivity
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 28, getResources().getDisplayMetrics()),
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 28, getResources().getDisplayMetrics()), false);
         return resizedBitmap;
+    }
+
+    public void loadNearbyOpenData(GoogleMap map, LatLng latLng, String name) {
+        DatabaseReference geoToilet = database.child("opendatas").child(name + "-geo");
+        GeoFire geoFire = new GeoFire(geoToilet);
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude), 1);
+        geoQueries.add(geoQuery);
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(new LatLng(location.latitude, location.longitude))
+                        .title(key)
+                        .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("marker_for_" + name)));
+                nearby.put(map.addMarker(markerOptions), key);
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+                System.out.println(String.format("Key %s is no longer in the search area", key));
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                System.out.println("All initial data has been loaded and events have been fired!");
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+                System.err.println("There was an error with this query: " + error);
+            }
+        });
     }
 
 
