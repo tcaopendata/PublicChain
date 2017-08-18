@@ -94,6 +94,7 @@
                           android:textColor="@color/brightColor"
                           android:text="SIGN THIS CAMPAIGN"
                           android:layout_marginTop="16dp"/>
+
                   </LinearLayout>
                 </LinearLayout>
             </ScrollView>

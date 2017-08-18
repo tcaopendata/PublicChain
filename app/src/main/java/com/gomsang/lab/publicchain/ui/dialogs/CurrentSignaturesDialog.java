@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,6 +23,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 /**
  * Created by Gyeongrok Kim on 2017-08-15.
  */
@@ -34,6 +37,8 @@ public class CurrentSignaturesDialog extends Dialog {
     private DialogCurrentSignaturesBinding binding;
 
     private DatabaseReference database;
+
+    private ArrayList<String> exportLinks = new ArrayList<>();
 
     public CurrentSignaturesDialog(Context context, CampaignData campaignData) {
         super(context);
@@ -58,8 +63,12 @@ public class CurrentSignaturesDialog extends Dialog {
         database.child("signatures").child(campaignData.getUuid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                signatureAdpater.add(dataSnapshot.getValue(SignatureData.class));
+                SignatureData signatureData = dataSnapshot.getValue(SignatureData.class);
+                signatureAdpater.add(signatureData);
                 signatureAdpater.notifyDataSetChanged();
+
+                if (signatureData.getMessage() != null)
+                    exportLinks.add(signatureData.getMessage());
 
                 binding.signMontiorTextView.setText("Now " + signatureAdpater.getCount() + " people signed");
             }
@@ -83,6 +92,11 @@ public class CurrentSignaturesDialog extends Dialog {
             public void onCancelled(DatabaseError databaseError) {
 
             }
+        });
+
+        binding.exportButton.setOnClickListener((View view) -> {
+            ExportDialog exportDialog = new ExportDialog(context, exportLinks);
+            exportDialog.show();
         });
     }
 
