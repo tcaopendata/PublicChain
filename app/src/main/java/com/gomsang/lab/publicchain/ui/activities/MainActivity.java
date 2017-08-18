@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +28,9 @@ import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.ActivityMainBinding;
 import com.gomsang.lab.publicchain.datas.AuthData;
 import com.gomsang.lab.publicchain.datas.CampaignData;
+import com.gomsang.lab.publicchain.datas.blockchain.SendTransactionResponse;
 import com.gomsang.lab.publicchain.libs.Constants;
+import com.gomsang.lab.publicchain.libs.blockchain.BlockChain;
 import com.gomsang.lab.publicchain.libs.utils.VerifyUtil;
 import com.gomsang.lab.publicchain.ui.dialogs.CampaignDialog;
 import com.gomsang.lab.publicchain.ui.dialogs.CurrentCampaignsDialog;
@@ -51,6 +54,10 @@ import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
@@ -77,14 +84,25 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(binding.parentPanel.toolbar);
         getSupportActionBar().setTitle("Public Chain");
-/*
-\
-        Web3j web3 = Web3jFactory.build(new HttpService("http://nozzang.jubeat.ml:8545"));  // defaults to http://localhost:8545/
-        web3.web3ClientVersion().observable().subscribe(x -> {
-            String clientVersion = x.getWeb3ClientVersion();
-            Log.d("blockchain", clientVersion);
+
+        new BlockChain().sendTransaction("0x506d153484838207444ce7c0ce86e78f6a955087",
+                "0xefc4c4a37f55a08a1d7c0c7a9e7f6f4917201cf3", "data")
+                .enqueue(new Callback<SendTransactionResponse>() {
+            @Override
+            public void onResponse(Call<SendTransactionResponse> call, Response<SendTransactionResponse> response) {
+                if (response.isSuccessful()) {
+                    SendTransactionResponse sendTransactionResponse = response.body();
+                    Log.d("blockchainlog", sendTransactionResponse.getResult());
+                }else {
+                    Log.d("blockchainlog", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SendTransactionResponse> call, Throwable t) {
+
+            }
         });
-*/
 
        /* JSONArray ARR = LoadUtils.getToiletsJsonArray(this);
         DatabaseReference geoPark = database.child("opendatas").child("publics-geo");

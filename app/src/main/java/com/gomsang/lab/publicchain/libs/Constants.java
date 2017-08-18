@@ -8,4 +8,5 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Constants {
     public static final LatLng SOUTHKOREA = new LatLng(35.907757, 127.766922);
+    public static final String URL_BLOCKCHAIN = "http://kinglaino.jubeat.ml:8545/";
 }
