@@ -9,8 +9,6 @@ import com.google.gson.annotations.SerializedName;
 
 
 public class SendTransactionResponse {
-
-
     @SerializedName("jsonrpc")
     @Expose
     private String jsonrpc;

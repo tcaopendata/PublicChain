@@ -5,6 +5,7 @@ package com.gomsang.lab.publicchain.datas;
  */
 
 public class SignatureData {
+    public String txid;
     public String campaignUUID;
     public String signerToken;
     public String message;
@@ -73,5 +74,13 @@ public class SignatureData {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getTxid() {
+        return txid;
+    }
+
+    public void setTxid(String txid) {
+        this.txid = txid;
     }
 }

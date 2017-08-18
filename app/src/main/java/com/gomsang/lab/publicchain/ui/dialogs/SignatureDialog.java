@@ -17,8 +17,15 @@ import com.gomsang.lab.publicchain.databinding.DialogSignatureBinding;
 import com.gomsang.lab.publicchain.datas.AuthData;
 import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.datas.SignatureData;
+import com.gomsang.lab.publicchain.datas.blockchain.SendTransactionResponse;
+import com.gomsang.lab.publicchain.libs.blockchain.BlockChain;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Gyeongrok Kim on 2017-08-09.
@@ -60,12 +67,29 @@ public class SignatureDialog extends Dialog {
                 donationFee = Double.parseDouble(donationFeeText);
             }
 
-            SignatureData signatureData = new SignatureData(campaignData.getUuid(),
+            final SignatureData signatureData = new SignatureData(campaignData.getUuid(),
                     currentAuthData.getPublicToken(), binding.messageEditText.getText().toString(), donationFee);
 
-            database.child("signatures").child(campaignData.getUuid()).push().setValue(signatureData);
-            Toast.makeText(context, "signature process complete", Toast.LENGTH_SHORT).show();
-            dismiss();
+            new BlockChain().sendTransaction("0x506d153484838207444ce7c0ce86e78f6a955087",
+                    "0xefc4c4a37f55a08a1d7c0c7a9e7f6f4917201cf3", new Gson().toJson(signatureData))
+                    .enqueue(new Callback<SendTransactionResponse>() {
+                        @Override
+                        public void onResponse(Call<SendTransactionResponse> call, Response<SendTransactionResponse> response) {
+                            if (response.isSuccessful()) {
+                                signatureData.setTxid(response.body().getResult());
+                                database.child("signatures").child(campaignData.getUuid()).push().setValue(signatureData);
+                                Toast.makeText(context, "complete\ntxid : " + signatureData.getTxid(), Toast.LENGTH_SHORT).show();
+                                dismiss();
+                            } else {
+                                Toast.makeText(context, "error occured on blockchain transaction", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SendTransactionResponse> call, Throwable t) {
+
+                        }
+                    });
         });
     }
 
