@@ -68,7 +68,7 @@ public class CurrentSignaturesDialog extends Dialog {
                 signatureAdpater.notifyDataSetChanged();
 
                 if (signatureData.getMessage() != null)
-                    exportLinks.add(signatureData.getMessage());
+                    exportLinks.add(signatureData.getTxid());
 
                 binding.signMontiorTextView.setText("Now " + signatureAdpater.getCount() + " people signed");
             }

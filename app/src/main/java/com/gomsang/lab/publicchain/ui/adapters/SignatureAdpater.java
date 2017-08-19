@@ -54,7 +54,7 @@ public class SignatureAdpater extends BaseAdapter {
         final Date signTime = new Date(signatureData.getSignTime());
         final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         binding.dateTextView.setText(sdf.format(signTime));
-
+        binding.txidTextView.setText(signatureData.getTxid());
         binding.statusTextView.setText(signatureData.getStatus());
 
         binding.donationTextView.setText(signatureData.getValue() + " ETH");

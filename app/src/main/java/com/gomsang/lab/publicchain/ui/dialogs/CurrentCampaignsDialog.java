@@ -59,7 +59,6 @@ public class CurrentCampaignsDialog extends Dialog {
 
         database = FirebaseDatabase.getInstance().getReference();
 
-
         database.child("campaigns").orderByChild("author").equalTo(currentAuthData.getPublicToken()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

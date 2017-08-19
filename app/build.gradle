@@ -10,6 +10,11 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    dexOptions {
+        jumboMode true
+        javaMaxHeapSize "4g"
     }
     buildTypes {
         release {
@@ -54,6 +59,8 @@ dependencies {
     // Retrofit - REST call library
     implementation 'com.squareup.retrofit2:retrofit:2.2.0'
     implementation 'com.squareup.retrofit2:converter-gson:+'
+
+    compile 'com.android.support:multidex:1.0.0'
 }
 
 
