@@ -2,6 +2,8 @@
 
 Public chain is decentralized signatures application.
 
+our presentation file added on : https://drive.google.com/file/d/0B2nWvXUAUcjZYTJHSklyYnptc1E/view
+
 ## Database | Firebase
 
 using firebase real-time database on store whole of campaigns and signatures. 
