@@ -27,7 +27,6 @@ import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.ActivityMainBinding;
 import com.gomsang.lab.publicchain.datas.AuthData;
 import com.gomsang.lab.publicchain.datas.CampaignData;
-import com.gomsang.lab.publicchain.datas.DestinationData;
 import com.gomsang.lab.publicchain.libs.Constants;
 import com.gomsang.lab.publicchain.libs.utils.VerifyUtil;
 import com.gomsang.lab.publicchain.ui.dialogs.CampaignDialog;
@@ -78,39 +77,6 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(binding.parentPanel.toolbar);
         getSupportActionBar().setTitle("Public Chain");
-
-        DestinationData destinationData = new DestinationData();
-        destinationData.setFrom("0xefc4c4a37f55a08a1d7c0c7a9e7f6f4917201cf3");
-        destinationData.setTo("0x506d153484838207444ce7c0ce86e78f6a955087");
-        database.child("currentDest").setValue(destinationData);
-
-       /* JSONArray ARR = LoadUtils.getToiletsJsonArray(this);
-        DatabaseReference geoPark = database.child("opendatas").child("publics-geo");
-        geoPark.removeValue();
-        for (int a = 0; a < ARR.length(); a++) {
-            try {
-                JSONObject object = ARR.getJSONObject(a);
-                GeoFire geoFire = new GeoFire(geoPark);
-
-                try {
-                    geoFire.setLocation(object.getString("name"), new GeoLocation(object.getDouble("latitude"),
-                            object.getDouble("longitude")), new GeoFire.CompletionListener() {
-                        @Override
-                        public void onComplete(String key, DatabaseError error) {
-                            count++;
-                            Log.d("geoLogs", key + "|" + count);
-                        }
-                    });
-                }catch (Exception e){
-                    Log.d("geoLogs", e + "");
-
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Log.d("geoLogs", e + "");
-            }
-        }*/
 
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
