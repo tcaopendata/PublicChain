@@ -31,6 +31,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
             android:name=".ui.activities.MainActivity"
             android:label="@string/title_activity_main"
@@ -41,10 +42,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.activities.AuthActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activities.Main1Activity"
+            android:label="@string/title_activity_main"></activity>
     </application>
 
 </manifest>
