@@ -15,7 +15,7 @@ import android.widget.AdapterView;
 
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.DialogCurrentSignaturesBinding;
-import com.gomsang.lab.publicchain.datas.AuthData;
+import com.gomsang.lab.publicchain.datas.UserData;
 import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.ui.adapters.CampaignAdapter;
 import com.google.firebase.database.ChildEventListener;
@@ -30,16 +30,16 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class CurrentCampaignsDialog extends Dialog {
     private Context context;
-    private AuthData currentAuthData;
+    private UserData currentUserData;
 
     private DialogCurrentSignaturesBinding binding;
 
     private DatabaseReference database;
 
-    public CurrentCampaignsDialog(Context context, AuthData currentAuthData) {
+    public CurrentCampaignsDialog(Context context, UserData currentUserData) {
         super(context);
         this.context = context;
-        this.currentAuthData = currentAuthData;
+        this.currentUserData = currentUserData;
     }
 
 
@@ -59,7 +59,7 @@ public class CurrentCampaignsDialog extends Dialog {
 
         database = FirebaseDatabase.getInstance().getReference();
 
-        database.child("campaigns").orderByChild("author").equalTo(currentAuthData.getPublicToken()).addChildEventListener(new ChildEventListener() {
+        database.child("campaigns").orderByChild("author").equalTo(currentUserData.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 campaignAdapter.add(dataSnapshot.getValue(CampaignData.class));
@@ -90,7 +90,7 @@ public class CurrentCampaignsDialog extends Dialog {
         });
 
         binding.signatureList.setOnItemClickListener((AdapterView<?> adapterView, View view, int i, long l) -> {
-                    CampaignDialog campaignDialog = new CampaignDialog(context, campaignAdapter.getItem(i), currentAuthData);
+                    CampaignDialog campaignDialog = new CampaignDialog(context, campaignAdapter.getItem(i), currentUserData);
                     campaignDialog.show();
                 }
         );

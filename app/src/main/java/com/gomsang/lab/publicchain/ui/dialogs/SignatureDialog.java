@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.DialogSignatureBinding;
-import com.gomsang.lab.publicchain.datas.AuthData;
+import com.gomsang.lab.publicchain.datas.UserData;
 import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.datas.DestinationData;
 import com.gomsang.lab.publicchain.datas.SignatureData;
@@ -41,15 +41,15 @@ public class SignatureDialog extends Dialog {
 
     private Context context;
     private CampaignData campaignData;
-    private AuthData currentAuthData;
+    private UserData currentUserData;
 
     private DatabaseReference database;
 
-    public SignatureDialog(Context context, CampaignData campaignData, AuthData currentAuthData) {
+    public SignatureDialog(Context context, CampaignData campaignData, UserData currentUserData) {
         super(context);
         this.context = context;
         this.campaignData = campaignData;
-        this.currentAuthData = currentAuthData;
+        this.currentUserData = currentUserData;
         this.database = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -72,7 +72,7 @@ public class SignatureDialog extends Dialog {
             }
 
             final SignatureData signatureData = new SignatureData(campaignData.getUuid(),
-                    currentAuthData.getPublicToken(), binding.messageEditText.getText().toString(), donationFee);
+                    currentUserData.getUid(), binding.messageEditText.getText().toString(), donationFee);
 
             database.child("currentDest").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

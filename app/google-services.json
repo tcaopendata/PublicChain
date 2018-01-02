@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "678346303967-cshv2d29rvb35mj81p2nnv892at1rvco.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gomsang.lab.publicchain",
+            "certificate_hash": "c45fb3dd8eef1a026b12aca08fb08c87de37396f"
+          }
+        },
+        {
           "client_id": "678346303967-rt5ibpn85mu1mhhfk8s5hta94n7mue32.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

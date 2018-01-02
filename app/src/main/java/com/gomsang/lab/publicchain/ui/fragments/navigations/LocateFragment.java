@@ -1,10 +1,13 @@
 package com.gomsang.lab.publicchain.ui.fragments.navigations;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -83,19 +86,40 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(Constants.SOUTHKOREA, 5));
         map.setMyLocationEnabled(true);
         map.setOnMapClickListener((LatLng latLng) -> {
-            for (Marker marker : nearby.keySet()) {
-                marker.remove();
-            }
-            for (GeoQuery geoQuery : geoQueries) {
-                geoQuery.removeAllListeners();
-            }
+            for (Marker marker : nearby.keySet()) marker.remove();
+            nearby.clear();
+            for (GeoQuery geoQuery : geoQueries) geoQuery.removeAllListeners();
             geoQueries.clear();
 
             loadNearbyOpenData(map, latLng, new String[]{"toilets", "parks", "publics"});
-
-            Toast.makeText(getActivity(), "search started", Toast.LENGTH_SHORT).show();
         });
 
+        /*map.setOnMapLongClickListener((LatLng latLng) -> {
+            if (currentAuthData != null) {
+                OpenCampaignDialog openCampaignDialog = new OpenCampaignDialog(Main1Activity.this, currentAuthData.getPublicToken(), latLng);
+                openCampaignDialog.show();
+            } else {
+                startActivity(new Intent(Main1Activity.this, AuthActivity.class));
+                Toast.makeText(Main1Activity.this, "require registration for open campaign", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        map.setOnMarkerClickListener(marker -> {
+                    if (campaigns.containsKey(marker)) {
+                        if (currentAuthData != null) {
+                            final CampaignData campaignData = campaigns.get(marker);
+                            CampaignDialog campaignDialog = new CampaignDialog(Main1Activity.this, campaignData, currentAuthData);
+                            campaignDialog.show();
+                        } else {
+                            startActivity(new Intent(Main1Activity.this, AuthActivity.class));
+                            Toast.makeText(Main1Activity.this, "require registration for see campaign", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    return false;
+                }
+        );*/
+
+        // 모든 서명 데이터를 지도에 표시
         database.child("campaigns").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -155,7 +179,6 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
             geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
                 @Override
                 public void onKeyEntered(String key, GeoLocation location) {
-
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(new LatLng(location.latitude, location.longitude))
                             .title(key)
@@ -165,22 +188,18 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
 
                 @Override
                 public void onKeyExited(String key) {
-                    System.out.println(String.format("Key %s is no longer in the search area", key));
                 }
 
                 @Override
                 public void onKeyMoved(String key, GeoLocation location) {
-                    System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
                 }
 
                 @Override
                 public void onGeoQueryReady() {
-                    System.out.println("All initial data has been loaded and events have been fired!");
                 }
 
                 @Override
                 public void onGeoQueryError(DatabaseError error) {
-                    System.err.println("There was an error with this query: " + error);
                 }
             });
         }

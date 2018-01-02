@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.DialogCampaignBinding;
-import com.gomsang.lab.publicchain.datas.AuthData;
+import com.gomsang.lab.publicchain.datas.UserData;
 import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.datas.SignatureData;
 import com.gomsang.lab.publicchain.libs.GlideApp;
@@ -44,13 +44,13 @@ public class CampaignDialog extends Dialog {
 
     private Context context;
     private CampaignData campaignData;
-    private AuthData currentAuthData;
+    private UserData currentUserData;
 
-    public CampaignDialog(Context context, CampaignData campaignData, AuthData currentAuthData) {
+    public CampaignDialog(Context context, CampaignData campaignData, UserData currentUserData) {
         super(context);
         this.context = context;
         this.campaignData = campaignData;
-        this.currentAuthData = currentAuthData;
+        this.currentUserData = currentUserData;
     }
 
     @Override
@@ -80,8 +80,8 @@ public class CampaignDialog extends Dialog {
         binding.descTextView.setText(campaignData.getDesc());
 
         binding.signButton.setOnClickListener(view -> {
-            if (currentAuthData != null) {
-                SignatureDialog signatureDialog = new SignatureDialog(context, campaignData, currentAuthData);
+            if (currentUserData != null) {
+                SignatureDialog signatureDialog = new SignatureDialog(context, campaignData, currentUserData);
                 signatureDialog.show();
             } else {
                 context.startActivity(new Intent(context, AuthActivity.class));
@@ -141,7 +141,7 @@ public class CampaignDialog extends Dialog {
         });
 
         database.child("signatures").child(campaignData.getUuid()).orderByChild("signerToken")
-                .equalTo(currentAuthData.getPublicToken()).addChildEventListener(new ChildEventListener() {
+                .equalTo(currentUserData.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 SignatureData signatureData = dataSnapshot.getValue(SignatureData.class);

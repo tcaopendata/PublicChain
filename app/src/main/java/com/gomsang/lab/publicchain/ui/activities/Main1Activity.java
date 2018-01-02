@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
@@ -25,7 +24,7 @@ import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.ActivityMain2Binding;
-import com.gomsang.lab.publicchain.datas.AuthData;
+import com.gomsang.lab.publicchain.datas.UserData;
 import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.libs.Constants;
 import com.gomsang.lab.publicchain.libs.utils.VerifyUtil;
@@ -59,7 +58,7 @@ public class Main1Activity extends AppCompatActivity
     private DatabaseReference database;
     private MenuItem signUpMenuItem;
     private MenuItem usersMenuItem;
-    private AuthData currentAuthData;
+    private UserData currentUserData;
 
 
     private HashMap<Marker, CampaignData> campaigns = new HashMap<>();
@@ -87,16 +86,16 @@ public class Main1Activity extends AppCompatActivity
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (!dataSnapshot.exists()) return;
-                        currentAuthData = dataSnapshot.getValue(AuthData.class);
+                        currentUserData = dataSnapshot.getValue(UserData.class);
 
                         // 네비게이션 메뉴단의 정보를 업데이트 합니다.
                         signUpMenuItem.setVisible(false);
                         usersMenuItem.setVisible(true);
                         View headerView = binding.navView.getHeaderView(0);
-                        ((TextView) headerView.findViewById(R.id.usernameTextView)).setText(currentAuthData.getName());
-                        ((TextView) headerView.findViewById(R.id.emailTextView)).setText(currentAuthData.getEmail());
+                  /*      ((TextView) headerView.findViewById(R.id.usernameTextView)).setText(currentUserData.getName());
+                        ((TextView) headerView.findViewById(R.id.emailTextView)).setText(currentUserData.getEmail());*/
 
-                        Toast.makeText(Main1Activity.this, "auth | Hello! " + currentAuthData.getName(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Main1Activity.this, "auth | Hello! " + currentUserData.getName(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -133,7 +132,7 @@ public class Main1Activity extends AppCompatActivity
         signUpMenuItem = binding.navView.getMenu().findItem(R.id.nav_signin);
         usersMenuItem = binding.navView.getMenu().findItem(R.id.nav_users);
 
-        if (currentAuthData != null) {
+        if (currentUserData != null) {
             signUpMenuItem.setVisible(false);
             usersMenuItem.setVisible(true);
         } else {
@@ -165,9 +164,9 @@ public class Main1Activity extends AppCompatActivity
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(Constants.SOUTHKOREA, 5));
         map.setMyLocationEnabled(true);
         map.setOnMapLongClickListener((LatLng latLng) -> {
-            if (currentAuthData != null) {
-                OpenCampaignDialog openCampaignDialog = new OpenCampaignDialog(Main1Activity.this, currentAuthData.getPublicToken(), latLng);
-                openCampaignDialog.show();
+            if (currentUserData != null) {
+                /*OpenCampaignDialog openCampaignDialog = new OpenCampaignDialog(Main1Activity.this, currentUserData.getPublicToken(), latLng);
+                openCampaignDialog.show();*/
             } else {
                 startActivity(new Intent(Main1Activity.this, AuthActivity.class));
                 Toast.makeText(Main1Activity.this, "require registration for open campaign", Toast.LENGTH_SHORT).show();
@@ -175,11 +174,10 @@ public class Main1Activity extends AppCompatActivity
         });
 
         map.setOnMarkerClickListener(marker -> {
-
                     if (campaigns.containsKey(marker)) {
-                        if (currentAuthData != null) {
+                        if (currentUserData != null) {
                             final CampaignData campaignData = campaigns.get(marker);
-                            CampaignDialog campaignDialog = new CampaignDialog(Main1Activity.this, campaignData, currentAuthData);
+                            CampaignDialog campaignDialog = new CampaignDialog(Main1Activity.this, campaignData, currentUserData);
                             campaignDialog.show();
                         } else {
                             startActivity(new Intent(Main1Activity.this, AuthActivity.class));
@@ -336,7 +334,7 @@ public class Main1Activity extends AppCompatActivity
                 startActivity(new Intent(Main1Activity.this, AuthActivity.class));
                 break;
             case R.id.nav_campaigns:
-                CurrentCampaignsDialog currentCampaignsDialog = new CurrentCampaignsDialog(Main1Activity.this, currentAuthData);
+                CurrentCampaignsDialog currentCampaignsDialog = new CurrentCampaignsDialog(Main1Activity.this, currentUserData);
                 currentCampaignsDialog.show();
         }
 

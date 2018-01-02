@@ -6,38 +6,31 @@ import java.util.UUID;
  * Created by Gyeongrok Kim on 2017-08-08.
  */
 
-public class AuthData {
+public class UserData {
 
-    private String publicToken;
-    // private token for recover
-    private String privateToken;
+    private String uid;
     private String name;
     private String email;
     private String address;
     private String phone;
 
-    public AuthData() {
+    public UserData() {
     }
 
-    public AuthData(String publicToken, String name, String email, String address, String phone) {
-        this.publicToken = publicToken;
-        this.privateToken = UUID.randomUUID().toString();
+    public UserData(String uid, String name, String email, String address, String phone) {
+        this.uid = uid;
         this.name = name;
         this.email = email;
         this.address = address;
         this.phone = phone;
     }
 
-    public String getPublicToken() {
-        return publicToken;
+    public String getUid() {
+        return uid;
     }
 
-    public String getPrivateToken() {
-        return privateToken;
-    }
-
-    public void setPrivateToken(String privateToken) {
-        this.privateToken = privateToken;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getName() {
