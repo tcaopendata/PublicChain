@@ -23,7 +23,7 @@ import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.FragmentLocateBinding;
 import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.libs.Constants;
-import com.gomsang.lab.publicchain.ui.activities.AuthActivity;
+import com.gomsang.lab.publicchain.libs.PublicChainState;
 import com.gomsang.lab.publicchain.ui.activities.Main1Activity;
 import com.gomsang.lab.publicchain.ui.dialogs.CampaignDialog;
 import com.gomsang.lab.publicchain.ui.dialogs.OpenCampaignDialog;
@@ -48,6 +48,8 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
 
     private DatabaseReference database;
 
+    private PublicChainState publicChainState;
+
     private HashMap<Marker, CampaignData> campaigns = new HashMap<>();
     private HashMap<Marker, String> nearby = new HashMap<>();
     private ArrayList<GeoQuery> geoQueries = new ArrayList<>();
@@ -55,6 +57,7 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
     public LocateFragment() {
         // Required empty public constructor
         database = FirebaseDatabase.getInstance().getReference();
+        publicChainState = PublicChainState.getInstance();
     }
 
     public static LocateFragment newInstance() {
@@ -84,7 +87,11 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap map) {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(Constants.SOUTHKOREA, 5));
-        map.setMyLocationEnabled(true);
+        if (!(ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+            map.setMyLocationEnabled(true);
+        }
         map.setOnMapClickListener((LatLng latLng) -> {
             for (Marker marker : nearby.keySet()) marker.remove();
             nearby.clear();
@@ -94,30 +101,29 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
             loadNearbyOpenData(map, latLng, new String[]{"toilets", "parks", "publics"});
         });
 
-        /*map.setOnMapLongClickListener((LatLng latLng) -> {
-            if (currentAuthData != null) {
-                OpenCampaignDialog openCampaignDialog = new OpenCampaignDialog(Main1Activity.this, currentAuthData.getPublicToken(), latLng);
+        map.setOnMapLongClickListener((LatLng latLng) -> {
+            if (publicChainState.getCurrentUserData() != null) {
+                OpenCampaignDialog openCampaignDialog = new OpenCampaignDialog(getActivity(),
+                        publicChainState.getCurrentUserData().getUid(), latLng);
                 openCampaignDialog.show();
             } else {
-                startActivity(new Intent(Main1Activity.this, AuthActivity.class));
-                Toast.makeText(Main1Activity.this, "require registration for open campaign", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "require registration for open campaign", Toast.LENGTH_SHORT).show();
             }
         });
 
         map.setOnMarkerClickListener(marker -> {
                     if (campaigns.containsKey(marker)) {
-                        if (currentAuthData != null) {
+                        if (publicChainState != null) {
                             final CampaignData campaignData = campaigns.get(marker);
-                            CampaignDialog campaignDialog = new CampaignDialog(Main1Activity.this, campaignData, currentAuthData);
+                            CampaignDialog campaignDialog = new CampaignDialog(getActivity(), campaignData, publicChainState.getCurrentUserData());
                             campaignDialog.show();
                         } else {
-                            startActivity(new Intent(Main1Activity.this, AuthActivity.class));
-                            Toast.makeText(Main1Activity.this, "require registration for see campaign", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "require registration for see campaign", Toast.LENGTH_SHORT).show();
                         }
                     }
                     return false;
                 }
-        );*/
+        );
 
         // 모든 서명 데이터를 지도에 표시
         database.child("campaigns").addChildEventListener(new ChildEventListener() {
@@ -176,6 +182,7 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
             GeoFire geoFire = new GeoFire(geoRef);
             GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude), 1);
             geoQueries.add(geoQuery);
+
             geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
                 @Override
                 public void onKeyEntered(String key, GeoLocation location) {

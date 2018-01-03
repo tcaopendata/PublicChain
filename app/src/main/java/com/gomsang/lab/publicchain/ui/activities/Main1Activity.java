@@ -67,7 +67,6 @@ public class Main1Activity extends AppCompatActivity
 
     int count = 0;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,7 +167,7 @@ public class Main1Activity extends AppCompatActivity
                 /*OpenCampaignDialog openCampaignDialog = new OpenCampaignDialog(Main1Activity.this, currentUserData.getPublicToken(), latLng);
                 openCampaignDialog.show();*/
             } else {
-                startActivity(new Intent(Main1Activity.this, AuthActivity.class));
+//                startActivity(new Intent(Main1Activity.this, AuthActivity.class));
                 Toast.makeText(Main1Activity.this, "require registration for open campaign", Toast.LENGTH_SHORT).show();
             }
         });
@@ -180,7 +179,7 @@ public class Main1Activity extends AppCompatActivity
                             CampaignDialog campaignDialog = new CampaignDialog(Main1Activity.this, campaignData, currentUserData);
                             campaignDialog.show();
                         } else {
-                            startActivity(new Intent(Main1Activity.this, AuthActivity.class));
+//                            startActivity(new Intent(Main1Activity.this, AuthActivity.class));
                             Toast.makeText(Main1Activity.this, "require registration for see campaign", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -331,7 +330,7 @@ public class Main1Activity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.nav_signin:
-                startActivity(new Intent(Main1Activity.this, AuthActivity.class));
+//                startActivity(new Intent(Main1Activity.this, AuthActivity.class));
                 break;
             case R.id.nav_campaigns:
                 CurrentCampaignsDialog currentCampaignsDialog = new CurrentCampaignsDialog(Main1Activity.this, currentUserData);

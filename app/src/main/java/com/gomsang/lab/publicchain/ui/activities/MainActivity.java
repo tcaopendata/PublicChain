@@ -1,19 +1,20 @@
 package com.gomsang.lab.publicchain.ui.activities;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ResultCodes;
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.ActivityMainBinding;
 import com.gomsang.lab.publicchain.datas.UserData;
@@ -23,13 +24,8 @@ import com.gomsang.lab.publicchain.ui.fragments.navigations.CommunityFragment;
 import com.gomsang.lab.publicchain.ui.fragments.navigations.DashboardFragment;
 import com.gomsang.lab.publicchain.ui.fragments.navigations.LocateFragment;
 import com.gomsang.lab.publicchain.ui.fragments.navigations.MoreFragment;
-import com.google.firebase.FirebaseException;
-import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,9 +33,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.security.auth.callback.Callback;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -82,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation.setSelectedItemId(R.id.navigation_map);
 
         database = FirebaseDatabase.getInstance();
 
@@ -99,9 +93,10 @@ public class MainActivity extends AppCompatActivity {
                             new InputDetailDialog(MainActivity.this).show();
                         } else {
                             currentUserData = dataSnapshot.getValue(UserData.class);
-                            PublicChainState.getInstatnce().updateUserData(currentUserData);
+                            PublicChainState.getInstance().updateUserData(currentUserData);
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }

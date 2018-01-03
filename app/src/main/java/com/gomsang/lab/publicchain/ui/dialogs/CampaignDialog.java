@@ -21,7 +21,6 @@ import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.datas.SignatureData;
 import com.gomsang.lab.publicchain.libs.GlideApp;
 import com.gomsang.lab.publicchain.libs.utils.LocationUtil;
-import com.gomsang.lab.publicchain.ui.activities.AuthActivity;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -84,7 +83,7 @@ public class CampaignDialog extends Dialog {
                 SignatureDialog signatureDialog = new SignatureDialog(context, campaignData, currentUserData);
                 signatureDialog.show();
             } else {
-                context.startActivity(new Intent(context, AuthActivity.class));
+//                context.startActivity(new Intent(context, AuthActivity.class));
                 Toast.makeText(context, "require registration for participate", Toast.LENGTH_SHORT).show();
             }
         });
