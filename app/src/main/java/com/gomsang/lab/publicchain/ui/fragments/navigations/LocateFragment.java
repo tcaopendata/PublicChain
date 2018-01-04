@@ -131,6 +131,7 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK && currentMap != null) {
                 Place place = PlaceAutocomplete.getPlace(getActivity(), data);
+                if (searchedMarker != null) searchedMarker.remove();
                 searchedMarker = currentMap.addMarker(new MarkerOptions()
                         .position(place.getLatLng())
                         .title(place.getName() + ""));
@@ -204,7 +205,7 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
                             .fromBitmap(LoadUtils.loadResizingSquareDrawable(getActivity(), "marker_for_donate", 28)));
                 } else {
                     markerOptions.icon(BitmapDescriptorFactory
-                            .fromBitmap(LoadUtils.loadResizingSquareDrawable(getActivity(), "marker_for_sign", 28));
+                            .fromBitmap(LoadUtils.loadResizingSquareDrawable(getActivity(), "marker_for_sign", 28)));
                 }
 
                 Marker newMarker = map.addMarker(markerOptions);
@@ -247,7 +248,7 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
                             .position(new LatLng(location.latitude, location.longitude))
                             .title(key)
                             .icon(BitmapDescriptorFactory
-                                    .fromBitmap(LoadUtils.loadResizingSquareDrawable(getActivity(), "marker_for_" + name, 28));
+                                    .fromBitmap(LoadUtils.loadResizingSquareDrawable(getActivity(), "marker_for_" + name, 28)));
                     nearby.put(map.addMarker(markerOptions), key);
                 }
 

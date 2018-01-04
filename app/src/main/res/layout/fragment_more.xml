@@ -2,42 +2,43 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context="com.gomsang.lab.publicchain.ui.fragments.navigations.MoreFragment">
 
 
         <LinearLayout
-            android:layout_weight="2"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
             android:background="@color/colorPrimaryDark"
             android:gravity="bottom"
-            android:padding="16dp"
-            android:layout_height="match_parent">
+            android:padding="22dp">
 
             <TextView
                 android:id="@+id/username"
-                android:text="Public Kim"
                 android:layout_width="match_parent"
-                android:textSize="36sp"
+                android:layout_height="wrap_content"
+                android:text="Public Kim"
                 android:textColor="@android:color/white"
-                android:layout_height="wrap_content" />
+                android:textSize="36sp" />
         </LinearLayout>
 
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/menu_recycler_view"
-                tools:listitem="@layout/item_menu"
-                app:layoutManager="LinearLayoutManager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/item_menu" />
 
         </LinearLayout>
 

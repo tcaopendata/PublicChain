@@ -64,8 +64,11 @@ public class CampaignDialog extends Dialog {
         database = FirebaseDatabase.getInstance().getReference();
 
         binding.campaignNameTextView.setText(campaignData.getName());
+
         binding.addressTextView.setText(LocationUtil.getAddressInString(context, new LatLng(campaignData.getLatitude(),
                 campaignData.getLongitude())));
+
+        binding.attachImageView.setOnClickListener(view -> CampaignDialog.this.dismiss());
         if (campaignData.getAttachImage() != null) {
             binding.attachImageView.setVisibility(View.VISIBLE);
             GlideApp.with(context).load(campaignData.getAttachImage()).centerCrop().into(binding.attachImageView);
@@ -83,7 +86,6 @@ public class CampaignDialog extends Dialog {
                 SignatureDialog signatureDialog = new SignatureDialog(context, campaignData, currentUserData);
                 signatureDialog.show();
             } else {
-//                context.startActivity(new Intent(context, AuthActivity.class));
                 Toast.makeText(context, "require registration for participate", Toast.LENGTH_SHORT).show();
             }
         });
