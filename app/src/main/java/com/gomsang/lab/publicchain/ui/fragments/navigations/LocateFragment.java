@@ -1,7 +1,6 @@
 package com.gomsang.lab.publicchain.ui.fragments.navigations;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +30,7 @@ import com.gomsang.lab.publicchain.databinding.FragmentLocateBinding;
 import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.libs.Constants;
 import com.gomsang.lab.publicchain.libs.PublicChainState;
+import com.gomsang.lab.publicchain.libs.utils.LoadUtils;
 import com.gomsang.lab.publicchain.ui.activities.Main1Activity;
 import com.gomsang.lab.publicchain.ui.dialogs.CampaignDialog;
 import com.gomsang.lab.publicchain.ui.dialogs.OpenCampaignDialog;
@@ -58,6 +59,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
+
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
@@ -72,6 +75,9 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
     private HashMap<Marker, CampaignData> campaigns = new HashMap<>();
     private HashMap<Marker, String> nearby = new HashMap<>();
     private ArrayList<GeoQuery> geoQueries = new ArrayList<>();
+
+    private GoogleMap currentMap = null;
+    private Marker searchedMarker = null;
 
     public LocateFragment() {
         // Required empty public constructor
@@ -92,25 +98,25 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@Nonnull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final FragmentLocateBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_locate, null, false);
+        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.AppDarkTheme);
+        final FragmentLocateBinding binding = DataBindingUtil.inflate(inflater.cloneInContext(contextThemeWrapper),
+                R.layout.fragment_locate, null, false);
 
         final SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        binding.searchView.setClickable(true);
-        binding.searchView.setOnSearchClickListener(view -> {
+        binding.searchButton.setOnClickListener((View view) -> {
+            int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
             try {
                 Intent intent =
-                        new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                        new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
                                 .build(getActivity());
                 startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
             } catch (GooglePlayServicesRepairableException e) {
-                Log.d("googleSearch", e.getLocalizedMessage());
                 // TODO: Handle the error.
             } catch (GooglePlayServicesNotAvailableException e) {
-                Log.d("googleSearch", e.getLocalizedMessage());
                 // TODO: Handle the error.
             }
         });
@@ -121,23 +127,27 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK && currentMap != null) {
                 Place place = PlaceAutocomplete.getPlace(getActivity(), data);
+                searchedMarker = currentMap.addMarker(new MarkerOptions()
+                        .position(place.getLatLng())
+                        .title(place.getName() + ""));
+                currentMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(getActivity(), data);
                 // TODO: Handle the error.
-
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled operation.
             }
         }
+
     }
-
-
 
     @Override
     public void onMapReady(GoogleMap map) {
+        currentMap = map;
         // moving map to focus south korea. (on first)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(Constants.SOUTHKOREA, 5));
         if (!(ActivityCompat.checkSelfPermission(getActivity(),
@@ -189,11 +199,12 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
                 MarkerOptions markerOptions = new MarkerOptions()
                         .position(new LatLng(campaignData.getLatitude(), campaignData.getLongitude()))
                         .title(campaignData.getName());
-
                 if (campaignData.isFunding()) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("marker_for_donate")));
+                    markerOptions.icon(BitmapDescriptorFactory
+                            .fromBitmap(LoadUtils.loadResizingSquareDrawable(getActivity(), "marker_for_donate", 28)));
                 } else {
-                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("marker_for_sign")));
+                    markerOptions.icon(BitmapDescriptorFactory
+                            .fromBitmap(LoadUtils.loadResizingSquareDrawable(getActivity(), "marker_for_sign", 28));
                 }
 
                 Marker newMarker = map.addMarker(markerOptions);
@@ -222,14 +233,6 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    public Bitmap resizeMapIcons(String iconName) {
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getActivity().getPackageName()));
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap,
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 28, getResources().getDisplayMetrics()),
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 28, getResources().getDisplayMetrics()), false);
-        return resizedBitmap;
-    }
-
     public void loadNearbyOpenData(GoogleMap map, LatLng latLng, String[] targetNames) {
         for (String name : targetNames) {
             DatabaseReference geoRef = database.child("opendatas").child(name + "-geo");
@@ -243,7 +246,8 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(new LatLng(location.latitude, location.longitude))
                             .title(key)
-                            .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("marker_for_" + name)));
+                            .icon(BitmapDescriptorFactory
+                                    .fromBitmap(LoadUtils.loadResizingSquareDrawable(getActivity(), "marker_for_" + name, 28));
                     nearby.put(map.addMarker(markerOptions), key);
                 }
 
