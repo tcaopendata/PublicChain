@@ -24,6 +24,9 @@ import com.gomsang.lab.publicchain.ui.fragments.navigations.CommunityFragment;
 import com.gomsang.lab.publicchain.ui.fragments.navigations.DashboardFragment;
 import com.gomsang.lab.publicchain.ui.fragments.navigations.LocateFragment;
 import com.gomsang.lab.publicchain.ui.fragments.navigations.MoreFragment;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private UserData currentUserData;
 
     private static final int RC_SIGN_IN = 123;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -158,6 +162,4 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.contentLayout, fragment)
                 .commit();
     }
-
-
 }

@@ -1,6 +1,8 @@
 package com.gomsang.lab.publicchain.ui.fragments.navigations;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
@@ -33,6 +35,8 @@ import com.gomsang.lab.publicchain.ui.dialogs.CampaignDialog;
 import com.gomsang.lab.publicchain.ui.dialogs.OpenCampaignDialog;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,7 +58,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+
 public class LocateFragment extends Fragment implements OnMapReadyCallback {
+
+    private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     private DatabaseReference database;
 
@@ -86,33 +95,45 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final FragmentLocateBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_locate, null, false);
-        binding.toolbar.setTitle("지도");
 
         final SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         binding.searchView.setClickable(true);
-        binding.searchView.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-
-                try {
-                    Intent intent =
-                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                                    .build(getActivity());
-                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-                } catch (GooglePlayServicesRepairableException e) {
-                    // TODO: Handle the error.
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    // TODO: Handle the error.
-                }
+        binding.searchView.setOnSearchClickListener(view -> {
+            try {
+                Intent intent =
+                        new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                                .build(getActivity());
+                startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+            } catch (GooglePlayServicesRepairableException e) {
+                Log.d("googleSearch", e.getLocalizedMessage());
+                // TODO: Handle the error.
+            } catch (GooglePlayServicesNotAvailableException e) {
+                Log.d("googleSearch", e.getLocalizedMessage());
+                // TODO: Handle the error.
             }
         });
 
         // Inflate the layout for this fragment
         return binding.getRoot();
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(getActivity(), data);
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(getActivity(), data);
+                // TODO: Handle the error.
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled operation.
+            }
+        }
+    }
+
 
 
     @Override
