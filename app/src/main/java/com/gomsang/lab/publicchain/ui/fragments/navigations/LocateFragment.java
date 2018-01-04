@@ -6,9 +6,13 @@ import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +31,9 @@ import com.gomsang.lab.publicchain.libs.PublicChainState;
 import com.gomsang.lab.publicchain.ui.activities.Main1Activity;
 import com.gomsang.lab.publicchain.ui.dialogs.CampaignDialog;
 import com.gomsang.lab.publicchain.ui.dialogs.OpenCampaignDialog;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,8 +48,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 public class LocateFragment extends Fragment implements OnMapReadyCallback {
 
@@ -76,8 +86,29 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final FragmentLocateBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_locate, null, false);
+        binding.toolbar.setTitle("지도");
+
         final SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        binding.searchView.setClickable(true);
+        binding.searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+
+                try {
+                    Intent intent =
+                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                                    .build(getActivity());
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                } catch (GooglePlayServicesRepairableException e) {
+                    // TODO: Handle the error.
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    // TODO: Handle the error.
+                }
+            }
+        });
 
         // Inflate the layout for this fragment
         return binding.getRoot();
@@ -86,12 +117,14 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap map) {
+        // moving map to focus south korea. (on first)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(Constants.SOUTHKOREA, 5));
         if (!(ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
             map.setMyLocationEnabled(true);
         }
+        // when map click
         map.setOnMapClickListener((LatLng latLng) -> {
             for (Marker marker : nearby.keySet()) marker.remove();
             nearby.clear();
@@ -100,7 +133,7 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
 
             loadNearbyOpenData(map, latLng, new String[]{"toilets", "parks", "publics"});
         });
-
+        // when map long-click
         map.setOnMapLongClickListener((LatLng latLng) -> {
             if (publicChainState.getCurrentUserData() != null) {
                 OpenCampaignDialog openCampaignDialog = new OpenCampaignDialog(getActivity(),
@@ -110,7 +143,7 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
                 Toast.makeText(getActivity(), "require registration for open campaign", Toast.LENGTH_SHORT).show();
             }
         });
-
+        // on marker click -> show detail campaign information
         map.setOnMarkerClickListener(marker -> {
                     if (campaigns.containsKey(marker)) {
                         if (publicChainState != null) {
