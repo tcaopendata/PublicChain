@@ -35,10 +35,10 @@ public class BlockChain {
             JSONObject param = new JSONObject();
             param.put("from", from);
             param.put("to", to);
-            param.put("gas", 500000);
+            param.put("gas", 400000);
             param.put("gasPrice", "0x9184e72a000");
             param.put("value", "0");
-            param.put("data", "0x" + toHex(data));
+            //param.put("data", "0x" + toHex(data));
 
             JSONObject req = new JSONObject();
             req.put("jsonrpc", "2.0");
