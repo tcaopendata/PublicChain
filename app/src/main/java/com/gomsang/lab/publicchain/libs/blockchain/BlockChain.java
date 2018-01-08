@@ -3,6 +3,7 @@ package com.gomsang.lab.publicchain.libs.blockchain;
 import android.util.Log;
 
 import com.gomsang.lab.publicchain.datas.blockchain.SendTransactionResponse;
+import com.gomsang.lab.publicchain.datas.blockchain.TransactionResponse;
 import com.gomsang.lab.publicchain.libs.Constants;
 
 import org.json.JSONArray;
@@ -48,6 +49,22 @@ public class BlockChain {
 
             RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), req.toString());
             return BlockChain.getBlockchainModel().sendTransaction(body);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public Call<TransactionResponse> requestNewAccount(String password) {
+        try {
+            JSONObject req = new JSONObject();
+            req.put("jsonrpc", "2.0");
+            req.put("method", "personal_newAccount");
+            req.put("params", new JSONArray().put(password));
+            req.put("id", 10);
+
+            RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), req.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

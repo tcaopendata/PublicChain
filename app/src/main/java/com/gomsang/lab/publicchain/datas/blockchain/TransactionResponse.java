@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 
-public class GetTransactionResponse {
+public class TransactionResponse {
 
     @SerializedName("id")
     @Expose
