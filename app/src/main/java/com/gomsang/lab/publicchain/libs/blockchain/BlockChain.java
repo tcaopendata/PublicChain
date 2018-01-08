@@ -2,7 +2,6 @@ package com.gomsang.lab.publicchain.libs.blockchain;
 
 import android.util.Log;
 
-import com.gomsang.lab.publicchain.datas.blockchain.SendTransactionResponse;
 import com.gomsang.lab.publicchain.datas.blockchain.TransactionResponse;
 import com.gomsang.lab.publicchain.libs.Constants;
 
@@ -31,30 +30,6 @@ public class BlockChain {
         return retrofit.create(BlockChainRequests.class);
     }
 
-    public Call<SendTransactionResponse> sendTransaction(String from, String to, String data) {
-        try {
-            JSONObject param = new JSONObject();
-            param.put("from", from);
-            param.put("to", to);
-            param.put("gas", 400000);
-            param.put("gasPrice", "0x9184e72a000");
-            param.put("value", "0");
-            //param.put("data", "0x" + toHex(data));
-
-            JSONObject req = new JSONObject();
-            req.put("jsonrpc", "2.0");
-            req.put("method", "eth_sendTransaction");
-            req.put("params", new JSONArray().put(param));
-            Log.d("parameter", req.toString());
-
-            RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), req.toString());
-            return BlockChain.getBlockchainModel().sendTransaction(body);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
     public Call<TransactionResponse> requestNewAccount(String password) {
         try {
@@ -70,6 +45,67 @@ public class BlockChain {
         }
         return null;
     }
+
+    public Call<TransactionResponse> getAccountBalance (String address) {
+        try {
+            JSONArray params = new JSONArray();
+            params.put(address);
+            params.put("latest");
+
+            JSONObject req = new JSONObject();
+            req.put("jsonrpc", "2.0");
+            req.put("method", "eth_getBalance");
+            req.put("params", params);
+            req.put("id", 10);
+
+            RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), req.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Call<TransactionResponse> requestUnlockAccount (String address, String password) {
+        try {
+            JSONArray params = new JSONArray();
+            params.put(address);
+            params.put(password);
+            params.put(300);
+
+            JSONObject req = new JSONObject();
+            req.put("jsonrpc", "2.0");
+            req.put("method", "personal_unlockAccount");
+            req.put("params", params);
+            req.put("id", 10);
+
+            RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), req.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Call<TransactionResponse> requestTransaction (String from, String to, String value) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("from", from);
+            params.put("value", value);
+            params.put("to", to);
+
+            JSONObject req = new JSONObject();
+            req.put("jsonrpc", "2.0");
+            req.put("method", "personal_unlockAccount");
+            req.put("params", new JSONArray().put(params));
+            req.put("id", 10);
+
+            RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), req.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
     public String toHex(String arg) {
         Log.d("jsonhash", String.format("%x", new BigInteger(1, arg.getBytes(/*YOUR_CHARSET?*/))));
