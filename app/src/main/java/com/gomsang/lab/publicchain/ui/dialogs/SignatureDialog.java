@@ -18,7 +18,6 @@ import com.gomsang.lab.publicchain.datas.UserData;
 import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.datas.DestinationData;
 import com.gomsang.lab.publicchain.datas.SignatureData;
-import com.gomsang.lab.publicchain.datas.blockchain.SendTransactionResponse;
 import com.gomsang.lab.publicchain.libs.blockchain.BlockChain;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
