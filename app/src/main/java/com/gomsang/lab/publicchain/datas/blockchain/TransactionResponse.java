@@ -17,8 +17,8 @@ public class TransactionResponse {
     @Expose
     private String jsonrpc;
     @SerializedName("result")
-    @Expose
-    private SendEthTransaction result;
+    /*@Expose
+    private SendEthTransaction result;*/
 
     public Integer getId() {
         return id;
@@ -35,13 +35,13 @@ public class TransactionResponse {
     public void setJsonrpc(String jsonrpc) {
         this.jsonrpc = jsonrpc;
     }
-
+/*
     public SendEthTransaction getResult() {
         return result;
     }
 
     public void setResult(SendEthTransaction result) {
         this.result = result;
-    }
+    }*/
 
 }

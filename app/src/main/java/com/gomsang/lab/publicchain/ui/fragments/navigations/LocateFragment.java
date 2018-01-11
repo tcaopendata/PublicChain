@@ -100,8 +100,7 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@Nonnull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.AppDarkTheme);
-        final FragmentLocateBinding binding = DataBindingUtil.inflate(inflater.cloneInContext(contextThemeWrapper),
+        final FragmentLocateBinding binding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_locate, null, false);
 
         final SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
