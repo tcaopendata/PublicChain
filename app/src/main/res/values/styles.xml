@@ -23,7 +23,7 @@
         <item name="tabIndicatorHeight">2dp</item>
         <item name="tabPaddingStart">6dp</item>
         <item name="tabPaddingEnd">6dp</item>
-        <item name="tabIndicatorColor">@color/colorPrimary</item>
+        <item name="tabIndicatorColor">@android:color/white</item>
         <item name="tabSelectedTextColor">@android:color/white</item>
         <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
         <item name="tabGravity">fill</item>

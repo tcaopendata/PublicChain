@@ -21,8 +21,8 @@ public class CommunityFragment extends Fragment {
     public CommunityFragment() {
     }
 
-    public static DashboardFragment newInstance(String parameter) {
-        DashboardFragment fragment = new DashboardFragment();
+    public static CommunityFragment newInstance(String parameter) {
+        CommunityFragment fragment = new CommunityFragment();
         Bundle args = new Bundle();
         args.putString("parameter", parameter);
         fragment.setArguments(args);
