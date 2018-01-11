@@ -61,7 +61,7 @@ public class CommunityFragment extends Fragment {
 
     public class SortPagerAdapter extends FragmentStatePagerAdapter {
 
-        private String[] pageTitles = {"지금 뜨는", "최근 올라온", "마감 임박"};
+        private String[] pageTitles = {"의안 정보", "모든 서명", "유저 토론"};
 
         SortPagerAdapter(FragmentManager fm) {
             super(fm);
