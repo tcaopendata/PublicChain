@@ -11,7 +11,7 @@ import retrofit2.http.POST;
  * Created by Gyeongrok Kim on 2017-08-19.
  */
 
-public interface BlockChainRequests {
+public interface BlockChainApi {
     @POST
     Call<TransactionResponse> requestNewAccount(@Body RequestBody body);
 

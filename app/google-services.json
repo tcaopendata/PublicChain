@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "678346303967-9ptdse8e72lm85rmog87s01h6k3p6lo7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gomsang.lab.publicchain",
+            "certificate_hash": "15eb12e83b084e1e142ac48e5aa5d64a1dad54e3"
+          }
+        },
+        {
+          "client_id": "678346303967-dus8h811svut236c1olnod88kc2jm8vq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gomsang.lab.publicchain",
+            "certificate_hash": "558579cf16764ba3d56ae44d0441d4d7ce416e5f"
+          }
+        },
+        {
           "client_id": "678346303967-dtnp0rr58m2ui8qqi829vgan6feutkj0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

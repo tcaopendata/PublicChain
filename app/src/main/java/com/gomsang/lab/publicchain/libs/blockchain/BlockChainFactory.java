@@ -20,14 +20,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Gyeongrok Kim on 2017-08-19.
  */
 
-public class BlockChain {
-    static public BlockChainRequests getBlockchainModel() {
+public class BlockChainFactory {
+    static public BlockChainApi getBlockchainModel() {
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.URL_BLOCKCHAIN)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        return retrofit.create(BlockChainRequests.class);
+        return retrofit.create(BlockChainApi.class);
     }
 
 
