@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -201,10 +202,10 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
                         .title(campaignData.getName());
                 if (campaignData.isFunding()) {
                     markerOptions.icon(BitmapDescriptorFactory
-                            .fromBitmap(LoadUtils.loadResizingSquareDrawable(getActivity(), "marker_for_donate", 28)));
+                            .fromBitmap(loadResizingSquareDrawable(getActivity(), "marker_for_donate", 28)));
                 } else {
                     markerOptions.icon(BitmapDescriptorFactory
-                            .fromBitmap(LoadUtils.loadResizingSquareDrawable(getActivity(), "marker_for_sign", 28)));
+                            .fromBitmap(loadResizingSquareDrawable(getActivity(), "marker_for_sign", 28)));
                 }
 
                 Marker newMarker = map.addMarker(markerOptions);
@@ -233,6 +234,16 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    public Bitmap loadResizingSquareDrawable(Context context, String drawableName, int resizedip) {
+        Resources resources = context.getResources();
+        Bitmap imageBitmap = BitmapFactory.decodeResource(resources, resources.getIdentifier(drawableName, "drawable",
+                context.getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap,
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, resizedip, resources.getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, resizedip, resources.getDisplayMetrics()), false);
+        return resizedBitmap;
+    }
+
     public void loadNearbyOpenData(GoogleMap map, LatLng latLng, String[] targetNames) {
         for (String name : targetNames) {
             DatabaseReference geoRef = database.child("opendatas").child(name + "-geo");
@@ -247,7 +258,7 @@ public class LocateFragment extends Fragment implements OnMapReadyCallback {
                             .position(new LatLng(location.latitude, location.longitude))
                             .title(key)
                             .icon(BitmapDescriptorFactory
-                                    .fromBitmap(LoadUtils.loadResizingSquareDrawable(getActivity(), "marker_for_" + name, 28)));
+                                    .fromBitmap(loadResizingSquareDrawable(getActivity(), "marker_for_" + name, 28)));
                     nearby.put(map.addMarker(markerOptions), key);
                 }
 
