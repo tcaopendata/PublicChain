@@ -14,9 +14,11 @@ import com.gomsang.lab.publicchain.databinding.ItemCampaignBinding;
 import com.gomsang.lab.publicchain.databinding.ItemChatBinding;
 import com.gomsang.lab.publicchain.databinding.ItemChatMineBinding;
 import com.gomsang.lab.publicchain.databinding.ItemChatShareBinding;
+import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.datas.ChatMessageData;
 import com.gomsang.lab.publicchain.datas.UserData;
 import com.gomsang.lab.publicchain.libs.PublicChainState;
+import com.gomsang.lab.publicchain.ui.dialogs.CampaignDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -115,7 +117,7 @@ public class ChatAdpater extends RecyclerView.Adapter<ChatAdpater.ViewHolder> {
             if (binding instanceof ItemChatBinding) {
                 ItemChatBinding itemChatBinding = (ItemChatBinding) binding;
                 itemChatBinding.messageText.setText(chatMessageData.getContent());
-                getUsernameByUid(chatMessageData.getAuthor(), itemChatBinding.messageAuthor);
+                getUsernameByUid(chatMessageData.getAuthor(), itemChatBinding.messageAuthor, "");
             }
             if (binding instanceof ItemChatMineBinding) {
                 ItemChatMineBinding itemChatMineBinding = ((ItemChatMineBinding) binding);
@@ -123,19 +125,33 @@ public class ChatAdpater extends RecyclerView.Adapter<ChatAdpater.ViewHolder> {
             }
             if (binding instanceof ItemChatShareBinding) {
                 ItemChatShareBinding itemChatShareBinding = ((ItemChatShareBinding) binding);
+                getUsernameByUid(chatMessageData.getAuthor(), itemChatShareBinding.infoText, "님이 캠페인을 공유하셨습니다");
+                database.child("campaigns").child(chatMessageData.getContent()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        itemChatShareBinding.campaignName.setText(dataSnapshot.getValue(CampaignData.class).getName());
+                        itemChatShareBinding.signButton.setOnClickListener(view ->
+                                new CampaignDialog(context, dataSnapshot.getValue(CampaignData.class),
+                                        PublicChainState.getInstance().getCurrentUserData()).show());
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         }
     }
 
-    public void getUsernameByUid(String uid, TextView textView) {
-        if (userNameCache.containsKey(uid)) textView.setText(userNameCache.get(uid));
+    public void getUsernameByUid(String uid, TextView textView, String add) {
+        if (userNameCache.containsKey(uid)) textView.setText(userNameCache.get(uid) + add);
 
         database.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userNameCache.put(uid, dataSnapshot.getValue(UserData.class).getName());
-                textView.setText(userNameCache.get(uid));
+                textView.setText(userNameCache.get(uid) + add);
             }
 
             @Override
