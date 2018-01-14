@@ -84,6 +84,8 @@ public class OpenCampaignDialog extends Dialog {
                 })
         );
         binding.confirmButton.setOnClickListener(view -> processOpen());
+        binding.blankSpace.setOnClickListener(view -> this.dismiss());
+        binding.backButton.setOnClickListener(view -> this.dismiss());
     }
 
     private void processOpen() {

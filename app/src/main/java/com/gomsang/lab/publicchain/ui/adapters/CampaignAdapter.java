@@ -2,62 +2,67 @@ package com.gomsang.lab.publicchain.ui.adapters;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.ItemCampaignBinding;
 import com.gomsang.lab.publicchain.datas.CampaignData;
+import com.gomsang.lab.publicchain.ui.dialogs.CampaignDialog;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
- * Created by Gyeongrok Kim on 2017-08-16.
+ * Created by devkg on 2018-01-14.
  */
 
-public class CampaignAdapter extends BaseAdapter {
+public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHolder> {
 
     private Context context;
     private ArrayList<CampaignData> campaignDatas = new ArrayList<>();
 
-    public CampaignAdapter(Context context){
+    public CampaignAdapter(Context context) {
         this.context = context;
     }
 
     @Override
-    public int getCount() {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        final ItemCampaignBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_campaign, parent, false);
+        return new ViewHolder(binding);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.bind(campaignDatas.get(position));
+    }
+
+    public CampaignData getItem(int position){
+        return campaignDatas.get(position);
+    }
+
+    @Override
+    public int getItemCount() {
         return campaignDatas.size();
     }
 
-    @Override
-    public CampaignData getItem(int i) {
-        return campaignDatas.get(i);
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        ItemCampaignBinding binding = DataBindingUtil.inflate((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE),
-                R.layout.item_campaign, null, false);
-        final CampaignData campaignData = campaignDatas.get(i);
-
-        binding.campaignTextView.setText(campaignData.getName());
-
-        final Date signTime = new Date(campaignData.getSignTime());
-        final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        binding.dateTextView.setText(sdf.format(signTime));
-        return binding.getRoot();
-    }
-
-    public void add(CampaignData campaignData){
+    public void addItem(CampaignData campaignData){
         campaignDatas.add(campaignData);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        private ItemCampaignBinding binding;
+
+        public ViewHolder(ItemCampaignBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        public void bind(CampaignData campaignData) {
+            binding.campaignTextView.setText(campaignData.getName());
+            binding.dateTextView.setText(campaignData.getSignTime() + "");
+        }
     }
 }

@@ -16,8 +16,6 @@ import android.widget.AdapterView;
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.DialogCurrentSignaturesBinding;
 import com.gomsang.lab.publicchain.datas.UserData;
-import com.gomsang.lab.publicchain.datas.CampaignData;
-import com.gomsang.lab.publicchain.ui.adapters.CampaignAdapter;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,8 +50,8 @@ public class CurrentCampaignsDialog extends Dialog {
         setContentView(binding.getRoot());
         setDialogSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        final CampaignAdapter campaignAdapter = new CampaignAdapter(context);
-        binding.signatureList.setAdapter(campaignAdapter);
+        /*final CampaignAdapter campaignAdapter = new CampaignAdapter(context);
+        binding.signatureList.setAdapter(campaignAdapter);*/
         binding.title.setText("Your Campaigns");
         binding.signMontiorTextView.setText("Now " + 0 + " campaign has enrolled");
 
@@ -62,10 +60,10 @@ public class CurrentCampaignsDialog extends Dialog {
         database.child("campaigns").orderByChild("author").equalTo(currentUserData.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                campaignAdapter.add(dataSnapshot.getValue(CampaignData.class));
+         /*       campaignAdapter.add(dataSnapshot.getValue(CampaignData.class));
                 campaignAdapter.notifyDataSetChanged();
 
-                binding.signMontiorTextView.setText("Now " + campaignAdapter.getCount() + " campaign has enrolled");
+                binding.signMontiorTextView.setText("Now " + campaignAdapter.getCount() + " campaign has enrolled");*/
             }
 
             @Override
@@ -90,8 +88,8 @@ public class CurrentCampaignsDialog extends Dialog {
         });
 
         binding.signatureList.setOnItemClickListener((AdapterView<?> adapterView, View view, int i, long l) -> {
-                    CampaignDialog campaignDialog = new CampaignDialog(context, campaignAdapter.getItem(i), currentUserData);
-                    campaignDialog.show();
+                    /*CampaignDialog campaignDialog = new CampaignDialog(context, campaignAdapter.getItem(i), currentUserData);
+                    campaignDialog.show();*/
                 }
         );
     }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,7 @@ public class MoreFragment extends Fragment {
         // Inflate the layout for this fragment
         MoreMenuAdapter moreMenuAdapter = new MoreMenuAdapter(getActivity());
         binding.menuRecyclerView.setAdapter(moreMenuAdapter);
+        binding.menuRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.menuRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(16));
         moreMenuAdapter.add(new MoreMenuData("계정정보", R.drawable.ic_account_circle_black_24dp));
         moreMenuAdapter.add(new MoreMenuData("등록한 운동 및 게시글", R.drawable.ic_archive_black_24dp));
