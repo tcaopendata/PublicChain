@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.FragmentArticlesBinding;
 import com.gomsang.lab.publicchain.datas.CampaignData;
+import com.gomsang.lab.publicchain.datas.opendata.Item;
 import com.gomsang.lab.publicchain.datas.opendata.Response;
 import com.gomsang.lab.publicchain.libs.Constants;
 import com.gomsang.lab.publicchain.libs.PublicChainState;
@@ -24,6 +25,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static com.gomsang.lab.publicchain.libs.opendata.OpenDataReturn.requestRceptData;
 
@@ -109,8 +114,31 @@ public class ArticlesFragment extends Fragment {
                 }
             }));
 
-            Response response = requestRceptData(3, 1, "국회");
-            Log.d("Item data", response.getHeader().getResultMsg());
+            Response response = requestRceptData(10, 1, "");
+            //numOfRows가 요청 개수라고 생각하시면됨
+            //bill_name는 키워드로 목록뽑아준다 생각하면됨 의안 던진놈 기준
+
+            int countArray = response.getBody().getNumOfRows();
+            Random signature = new Random();
+            for (int i = 0; i < countArray; i++) { //Rcept to Campaign 빌런 + adapter add
+                CampaignData data = new CampaignData();
+                Item body = response.getBody() //리스폰 데이터 객체 빤쓰런
+                        .getItems()
+                        .getItems()
+                        .get(i);
+
+                data.setAuthor(body.getProposerKind());
+                data.setDesc("");
+                data.setFunding(false);
+                data.setGoalOfContribution(10.5); //?
+                data.setGoalOfSignature(signature.nextInt(100)); // 목표량 현재 랜덤값
+                data.setName(body.getBillName());
+                data.setUuid(body.getBillId()); //UUID
+                //위치데이터 포함 안했음 적절하게 더미데이터 해주시길바람
+
+                campaignAdapter.addItem(data);
+                campaignAdapter.notifyDataSetChanged();
+            }
         }
 
         return binding.getRoot();
