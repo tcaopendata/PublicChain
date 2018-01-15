@@ -10,7 +10,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
  */
 
 public class OpenDataPool {
-    public static final String URL = "http://openapi.assembly.go.kr/openapi/service/BillInfoService/";
+    public static final String URL = "http://apis.data.go.kr/9710000/BillInfoService/";
     public static final String KEY = "f7OvLcyF%2BqIo4PH%2FzqTrpSVNtrFF98C1iLUhJ4xuOF5N0BuwObQQ%2Fhgp9GfSu%2Fz9HjdQjYJFcvaxnKDPU%2BNQLg%3D%3D";
 
     private static OpenDataApi openDataApi = new Retrofit.Builder()

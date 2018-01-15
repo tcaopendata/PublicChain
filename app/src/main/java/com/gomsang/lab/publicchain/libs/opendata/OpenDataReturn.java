@@ -1,6 +1,6 @@
 package com.gomsang.lab.publicchain.libs.opendata;
 
-import com.gomsang.lab.publicchain.datas.opendata.RceptData;
+import com.gomsang.lab.publicchain.datas.opendata.Response;
 
 import static com.gomsang.lab.publicchain.libs.opendata.OpenDataPool.KEY;
 
@@ -9,13 +9,13 @@ import static com.gomsang.lab.publicchain.libs.opendata.OpenDataPool.KEY;
  */
 
 public class OpenDataReturn {
-    public static RceptData rceptData(int numOfRows, int pageNo, String bill_name) {
+    public static Response requestRceptData(int numOfRows, int pageNo, String bill_name) {
         try {
             return OpenDataPool.getOpenDataApi()
                     .requestData(numOfRows, pageNo, bill_name, KEY)
                     .get();
         } catch (Exception e) {
-            return RceptData.failed();
+            return Response.failed();
         }
     }
 }
