@@ -59,18 +59,12 @@ dependencies {
     // Retrofit - REST call library
     implementation 'com.squareup.retrofit2:retrofit:2.2.0'
     implementation 'com.squareup.retrofit2:converter-gson:+'
+    implementation 'com.squareup.retrofit2:converter-simplexml:+'
+    implementation 'com.squareup.retrofit2:converter-guava:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-guava:2.3.0'
+
+    implementation group: 'io.blocko', name: 'coinstack', version: '3.0.27'
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 apply plugin: 'com.google.gms.google-services'
