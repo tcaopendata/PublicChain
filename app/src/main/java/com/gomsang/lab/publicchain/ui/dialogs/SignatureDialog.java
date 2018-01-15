@@ -14,12 +14,11 @@ import android.widget.Toast;
 
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.DialogSignatureBinding;
-import com.gomsang.lab.publicchain.datas.AuthData;
+import com.gomsang.lab.publicchain.datas.UserData;
 import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.datas.DestinationData;
 import com.gomsang.lab.publicchain.datas.SignatureData;
-import com.gomsang.lab.publicchain.datas.blockchain.SendTransactionResponse;
-import com.gomsang.lab.publicchain.libs.blockchain.BlockChain;
+import com.gomsang.lab.publicchain.libs.blockchain.BlockChainFactory;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,15 +40,15 @@ public class SignatureDialog extends Dialog {
 
     private Context context;
     private CampaignData campaignData;
-    private AuthData currentAuthData;
+    private UserData currentUserData;
 
     private DatabaseReference database;
 
-    public SignatureDialog(Context context, CampaignData campaignData, AuthData currentAuthData) {
+    public SignatureDialog(Context context, CampaignData campaignData, UserData currentUserData) {
         super(context);
         this.context = context;
         this.campaignData = campaignData;
-        this.currentAuthData = currentAuthData;
+        this.currentUserData = currentUserData;
         this.database = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -72,32 +71,17 @@ public class SignatureDialog extends Dialog {
             }
 
             final SignatureData signatureData = new SignatureData(campaignData.getUuid(),
-                    currentAuthData.getPublicToken(), binding.messageEditText.getText().toString(), donationFee);
+                    currentUserData.getUid(), binding.messageEditText.getText().toString(), donationFee);
 
             database.child("currentDest").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    //
                     DestinationData destinationData = dataSnapshot.getValue(DestinationData.class);
-                    new BlockChain().sendTransaction(destinationData.getFrom(),
-                            destinationData.getTo(), new Gson().toJson(signatureData))
-                            .enqueue(new Callback<SendTransactionResponse>() {
-                                @Override
-                                public void onResponse(Call<SendTransactionResponse> call, Response<SendTransactionResponse> response) {
-                                    if (response.isSuccessful()) {
-                                        signatureData.setTxid(response.body().getResult());
-                                        database.child("signatures").child(campaignData.getUuid()).push().setValue(signatureData);
-                                        Toast.makeText(context, "complete\ntxid : " + signatureData.getTxid(), Toast.LENGTH_SHORT).show();
-                                        dismiss();
-                                    } else {
-                                        Toast.makeText(context, "error occured on blockchain transaction", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<SendTransactionResponse> call, Throwable t) {
-
-                                }
-                            });
+                    signatureData.setTxid("");
+                    database.child("signatures").child(campaignData.getUuid()).push().setValue(signatureData);
+                    Toast.makeText(context, "complete\ntxid : " + signatureData.getTxid(), Toast.LENGTH_SHORT).show();
+                    dismiss();
                 }
 
                 @Override

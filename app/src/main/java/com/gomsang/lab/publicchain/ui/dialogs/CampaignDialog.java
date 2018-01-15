@@ -2,11 +2,13 @@ package com.gomsang.lab.publicchain.ui.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +18,14 @@ import android.widget.Toast;
 
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.DialogCampaignBinding;
-import com.gomsang.lab.publicchain.datas.AuthData;
+import com.gomsang.lab.publicchain.datas.ChatMessageData;
+import com.gomsang.lab.publicchain.datas.UserData;
 import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.datas.SignatureData;
+import com.gomsang.lab.publicchain.libs.Constants;
 import com.gomsang.lab.publicchain.libs.GlideApp;
+import com.gomsang.lab.publicchain.libs.PublicChainState;
 import com.gomsang.lab.publicchain.libs.utils.LocationUtil;
-import com.gomsang.lab.publicchain.ui.activities.AuthActivity;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -44,13 +48,13 @@ public class CampaignDialog extends Dialog {
 
     private Context context;
     private CampaignData campaignData;
-    private AuthData currentAuthData;
+    private UserData currentUserData;
 
-    public CampaignDialog(Context context, CampaignData campaignData, AuthData currentAuthData) {
+    public CampaignDialog(Context context, CampaignData campaignData, UserData currentUserData) {
         super(context);
         this.context = context;
         this.campaignData = campaignData;
-        this.currentAuthData = currentAuthData;
+        this.currentUserData = currentUserData;
     }
 
     @Override
@@ -65,8 +69,11 @@ public class CampaignDialog extends Dialog {
         database = FirebaseDatabase.getInstance().getReference();
 
         binding.campaignNameTextView.setText(campaignData.getName());
+
         binding.addressTextView.setText(LocationUtil.getAddressInString(context, new LatLng(campaignData.getLatitude(),
                 campaignData.getLongitude())));
+
+        binding.attachImageView.setOnClickListener(view -> CampaignDialog.this.dismiss());
         if (campaignData.getAttachImage() != null) {
             binding.attachImageView.setVisibility(View.VISIBLE);
             GlideApp.with(context).load(campaignData.getAttachImage()).centerCrop().into(binding.attachImageView);
@@ -79,12 +86,26 @@ public class CampaignDialog extends Dialog {
 
         binding.descTextView.setText(campaignData.getDesc());
 
+        binding.shareButton.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage("이 캠페인을 커뮤니티 토론 채팅에 공유할까요?")
+                    .setPositiveButton("네", (dialog, id) -> {
+                        Toast.makeText(context, "캠페인이 커뮤니티 채팅에 공유되었습니다", Toast.LENGTH_LONG).show();
+                        ChatMessageData chatMessageData = new ChatMessageData("share",
+                                campaignData.getUuid(),
+                                PublicChainState.getInstance().getCurrentUserData().getUid());
+                        database.child("chats").child(Constants.CHATCHANNEL_COMMUNITY).child(System.currentTimeMillis() + "").setValue(chatMessageData);
+                    })
+                    .setNegativeButton("아니요", (dialog, id) -> {
+                    });
+            builder.create().show();
+        });
+
         binding.signButton.setOnClickListener(view -> {
-            if (currentAuthData != null) {
-                SignatureDialog signatureDialog = new SignatureDialog(context, campaignData, currentAuthData);
+            if (currentUserData != null) {
+                SignatureDialog signatureDialog = new SignatureDialog(context, campaignData, currentUserData);
                 signatureDialog.show();
             } else {
-                context.startActivity(new Intent(context, AuthActivity.class));
                 Toast.makeText(context, "require registration for participate", Toast.LENGTH_SHORT).show();
             }
         });
@@ -141,7 +162,7 @@ public class CampaignDialog extends Dialog {
         });
 
         database.child("signatures").child(campaignData.getUuid()).orderByChild("signerToken")
-                .equalTo(currentAuthData.getPublicToken()).addChildEventListener(new ChildEventListener() {
+                .equalTo(currentUserData.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 SignatureData signatureData = dataSnapshot.getValue(SignatureData.class);

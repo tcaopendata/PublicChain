@@ -84,6 +84,8 @@ public class OpenCampaignDialog extends Dialog {
                 })
         );
         binding.confirmButton.setOnClickListener(view -> processOpen());
+        binding.blankSpace.setOnClickListener(view -> this.dismiss());
+        binding.backButton.setOnClickListener(view -> this.dismiss());
     }
 
     private void processOpen() {
@@ -111,7 +113,7 @@ public class OpenCampaignDialog extends Dialog {
         campaignData.setLatitude(latLng.latitude);
         campaignData.setLongitude(latLng.longitude);
 
-        campaignData.setUuid(UUID.randomUUID().toString());
+        campaignData.setUuid(System.currentTimeMillis() + "_" + UUID.randomUUID().toString());
         campaignData.setAuthor(author);
 
         campaignData.setSignTime(System.currentTimeMillis());
@@ -127,7 +129,7 @@ public class OpenCampaignDialog extends Dialog {
         if (attachImageUri != null) {
             ProgressDialog progressDialog = ProgressDialog.show(context, "Uploading..", "now uploading your attachment");
 
-            StorageReference uploadRef = storage.child("images/" + UUID.randomUUID().toString() + ".jpg");
+            StorageReference uploadRef = storage.child("images/" + campaignData.getUuid() + ".jpg");
             UploadTask uploadTask = uploadRef.putFile(attachImageUri);
             uploadTask.addOnFailureListener((@NonNull Exception exception) -> {
                         progressDialog.dismiss();

@@ -1,104 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:gravity="center|bottom"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_view"
+        <ImageView
+            android:id="@+id/attachImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/campaignNameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimaryDark"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="16dp"
+                    android:text="Campaign Name"
+                    android:textColor="@color/brightColor"
+                    android:textSize="24dp" />
+
+
+                <TextView
+                    android:id="@+id/addressTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimaryDark"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="address"
+                    android:textColor="@color/brightColor" />
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            android:gravity="center"
-            card_view:cardBackgroundColor="@color/brightColor"
-            card_view:cardCornerRadius="4dp">
+            android:background="@color/brightColor"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="100dp">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/descTextView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/campaignNameTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Campaign Name"
-                        android:paddingTop="16dp"
-                        android:paddingRight="16dp"
-                        android:paddingLeft="16dp"
-                        android:background="@color/colorPrimaryDark"
-                        android:textColor="@color/brightColor"
-                        android:textSize="24dp" />
-
-
-                    <TextView
-                        android:id="@+id/addressTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="address"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:paddingBottom="16dp"
-                        android:background="@color/colorPrimaryDark"
-                        android:textColor="@color/brightColor" />
-
-                  <LinearLayout
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      android:padding="16dp"
-                      android:orientation="vertical">
-
-                      <ImageView
-                          android:id="@+id/attachImageView"
-                          android:layout_width="match_parent"
-                          android:layout_height="170dp"
-                          android:visibility="gone" />
-
-                      <TextView
-                          android:id="@+id/descTextView"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:layout_marginTop="8dp"
-                          android:text="desc here" />
-
-
-                      <TextView
-                          android:id="@+id/statusTextView"
-                          android:layout_width="match_parent"
-                          android:text="현재 0/0"
-                          android:gravity="right"
-                          android:layout_marginTop="16dp"
-                          android:textSize="18dp"
-                          android:textStyle="bold"
-                          android:layout_height="wrap_content" />
-
-                      <ProgressBar
-                          android:id="@+id/statusProgressBar"
-                          android:layout_width="match_parent"
-                          style="?android:attr/progressBarStyleHorizontal"
-                          android:layout_height="wrap_content"
-                          android:max="100"
-                          android:progress="23"/>
-
-                      <Button
-                          android:id="@+id/signButton"
-                          android:layout_width="match_parent"
-                          android:layout_height="56dp"
-                          android:background="@color/colorPrimaryDark"
-                          android:textColor="@color/brightColor"
-                          android:text="SIGN THIS CAMPAIGN"
-                          android:layout_marginTop="16dp"/>
-
-                  </LinearLayout>
-                </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:text="desc here"
+                    android:textColor="#000000" />
             </ScrollView>
-        </android.support.v7.widget.CardView>
 
-    </RelativeLayout>
+
+            <ProgressBar
+                android:id="@+id/statusProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:max="100"
+                android:progress="23" />
+
+            <TextView
+                android:id="@+id/statusTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="현재 0/0"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="56dp">
+
+            <Button
+                android:id="@+id/signButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryDark"
+                android:text="SIGN THIS CAMPAIGN"
+                android:textColor="@color/brightColor" />
+
+
+            <ImageButton
+                android:id="@+id/shareButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+
+                android:background="@color/colorAccent"
+                app:srcCompat="@drawable/ic_share_white_24dp"
+                android:textColor="@color/brightColor" />
+
+        </LinearLayout>
+    </LinearLayout>
 </layout>

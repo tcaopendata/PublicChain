@@ -1,18 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:gravity="center|bottom"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_view"
+        <RelativeLayout
+            android:id="@+id/blankSpace"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            android:gravity="center"
-            card_view:cardCornerRadius="4dp">
+            android:layout_height="match_parent"
+            android:layout_weight="2" />
+
+        <LinearLayout
+            android:layout_weight="1.5"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@color/colorPrimary">
+
+                <ImageButton
+                    android:id="@+id/backButton"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
+
+                <ImageButton
+                    android:id="@+id/confirmButton"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_check_white_24dp" />
+            </RelativeLayout>
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -20,64 +48,54 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/colorPrimaryDark"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
                     android:orientation="vertical"
                     android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Open campaign"
-                        android:textColor="@color/brightColor"
-                        android:textSize="24dp" />
 
                     <TextView
                         android:id="@+id/addressTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:textColor="@color/brightColor" />
+                        android:textColor="@android:color/black" />
 
                     <EditText
                         android:id="@+id/nameEditText"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/brightColor"
-                        android:hint="name"
+                        android:layout_marginTop="8dp"
+                        android:hint="캠페인 이름"
                         android:maxLines="1"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp" />
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp" />
 
                     <EditText
                         android:id="@+id/descEditText"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/brightColor"
-                        android:hint="description"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp" />
+                        android:layout_marginTop="8dp"
+                        android:hint="갬페인 개요 및 소개"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp" />
 
 
                     <EditText
                         android:id="@+id/goalOfSignEditText"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/brightColor"
-                        android:hint="goal of signature"
+                        android:layout_marginTop="8dp"
+                        android:hint="목표 서명 개수"
                         android:inputType="number"
                         android:maxLines="1"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp" />
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp" />
 
                     <Button
                         android:id="@+id/attachImageButton"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:background="@color/brightColor"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
@@ -88,37 +106,23 @@
                         android:id="@+id/fundCampaignCheckBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="campaign include funding factor"
-                        android:textColor="@color/brightColor"
-                        android:theme="@style/WhiteCheck" />
+                        android:layout_marginTop="8dp"
+                        android:text="campaign include funding factor"/>
 
                     <EditText
                         android:id="@+id/goalOfFundEditText"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/brightColor"
-                        android:hint="goal of contribution (ETH)"
+                        android:layout_marginTop="8dp"
+                        android:hint="목표 후원 (ETH)"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
                         android:visibility="gone" />
 
-                    <Button
-                        android:id="@+id/confirmButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/brightColor"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:text="confirm"
-                        android:textColor="@color/colorPrimaryDark" />
                 </LinearLayout>
             </ScrollView>
-        </android.support.v7.widget.CardView>
-
-    </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
 </layout>

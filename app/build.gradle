@@ -1,20 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.2"
     defaultConfig {
         applicationId "com.gomsang.lab.publicchain"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-    }
-    dexOptions {
-        jumboMode true
-        javaMaxHeapSize "4g"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -33,16 +30,17 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.0.0'
+    implementation 'com.android.support:recyclerview-v7:27.0.2'
+    implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.google.android.gms:play-services-maps:11.0.2'
     implementation 'com.android.support:design:+'
-    implementation 'com.google.firebase:firebase-database:11.0.2'
-    implementation 'com.google.firebase:firebase-storage:11.0.2'
+    implementation 'com.google.android.gms:play-services-places:11.6.2'
+    implementation 'com.google.android.gms:play-services-maps:11.6.2'
+    implementation 'com.google.firebase:firebase-database:11.6.2'
+    implementation 'com.google.firebase:firebase-storage:11.6.2'
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.0'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.0'
+    implementation 'com.google.firebase:firebase-auth:11.6.2'
+    implementation 'com.firebaseui:firebase-ui-auth:3.1.2'
 
     implementation 'gun0912.ted:tedpermission:1.0.3'
     implementation 'com.google.guava:guava:23.0-android'
@@ -50,6 +48,8 @@ dependencies {
 
     implementation 'com.mlsdev.rximagepicker:library:2.0.0'
     implementation 'com.github.bumptech.glide:glide:4.0.0'
+    implementation 'com.android.support:support-vector-drawable:27.0.2'
+    implementation 'com.android.support:support-v4:27.0.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
 
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
@@ -59,11 +59,12 @@ dependencies {
     // Retrofit - REST call library
     implementation 'com.squareup.retrofit2:retrofit:2.2.0'
     implementation 'com.squareup.retrofit2:converter-gson:+'
+    implementation 'com.squareup.retrofit2:converter-simplexml:+'
+    implementation 'com.squareup.retrofit2:converter-guava:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-guava:2.3.0'
 
-    compile 'com.android.support:multidex:1.0.0'
+    implementation group: 'io.blocko', name: 'coinstack', version: '3.0.27'
+
 }
-
-
-
 
 apply plugin: 'com.google.gms.google-services'

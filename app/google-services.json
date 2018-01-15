@@ -15,6 +15,62 @@
       },
       "oauth_client": [
         {
+          "client_id": "678346303967-01jkb70faa7ujslgnub6vlhtbdp4svks.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gomsang.lab.publicchain",
+            "certificate_hash": "4fd9b1f7f1ea339ebe80192c9d6a85ae99ef1d10"
+          }
+        },
+        {
+          "client_id": "678346303967-u4cs151gmj2qr26igotnu15rhsggtdb0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gomsang.lab.publicchain",
+            "certificate_hash": "413290456c528ac8fca0ae12efebd5511e7ff249"
+          }
+        },
+        {
+          "client_id": "678346303967-9ptdse8e72lm85rmog87s01h6k3p6lo7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gomsang.lab.publicchain",
+            "certificate_hash": "15eb12e83b084e1e142ac48e5aa5d64a1dad54e3"
+          }
+        },
+        {
+          "client_id": "678346303967-dus8h811svut236c1olnod88kc2jm8vq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gomsang.lab.publicchain",
+            "certificate_hash": "558579cf16764ba3d56ae44d0441d4d7ce416e5f"
+          }
+        },
+        {
+          "client_id": "678346303967-dtnp0rr58m2ui8qqi829vgan6feutkj0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gomsang.lab.publicchain",
+            "certificate_hash": "982eb58e9ee0793d005ecb01c3a89ac75a086e0f"
+          }
+        },
+        {
+          "client_id": "678346303967-l25bdspu05q55oqikee71179jljn43nc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gomsang.lab.publicchain",
+            "certificate_hash": "2757ac91ad61901fbc63899c9076aa63147fdecc"
+          }
+        },
+        {
+          "client_id": "678346303967-cshv2d29rvb35mj81p2nnv892at1rvco.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gomsang.lab.publicchain",
+            "certificate_hash": "c45fb3dd8eef1a026b12aca08fb08c87de37396f"
+          }
+        },
+        {
           "client_id": "678346303967-rt5ibpn85mu1mhhfk8s5hta94n7mue32.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
