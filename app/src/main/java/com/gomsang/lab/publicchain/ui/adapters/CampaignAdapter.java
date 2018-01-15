@@ -12,7 +12,9 @@ import com.gomsang.lab.publicchain.databinding.ItemCampaignBinding;
 import com.gomsang.lab.publicchain.datas.CampaignData;
 import com.gomsang.lab.publicchain.ui.dialogs.CampaignDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by devkg on 2018-01-14.
@@ -38,7 +40,7 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
         holder.bind(campaignDatas.get(position));
     }
 
-    public CampaignData getItem(int position){
+    public CampaignData getItem(int position) {
         return campaignDatas.get(position);
     }
 
@@ -47,7 +49,7 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
         return campaignDatas.size();
     }
 
-    public void addItem(CampaignData campaignData){
+    public void addItem(CampaignData campaignData) {
         campaignDatas.add(campaignData);
     }
 
@@ -62,7 +64,13 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
 
         public void bind(CampaignData campaignData) {
             binding.campaignTextView.setText(campaignData.getName());
-            binding.dateTextView.setText(campaignData.getSignTime() + "");
+
+            Date enrollDate = new Date();
+            enrollDate.setTime(campaignData.getSignTime());
+            SimpleDateFormat format = new SimpleDateFormat("MM월 DD일 HH:mm");
+            binding.dateTextView.setText(format.format(enrollDate));
+
+            binding.goalTextView.setText("목표량 : " + campaignData.getGoalOfSignature());
         }
     }
 }

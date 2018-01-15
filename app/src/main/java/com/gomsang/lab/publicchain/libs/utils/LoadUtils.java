@@ -11,13 +11,4 @@ import android.util.TypedValue;
  */
 
 public class LoadUtils {
-    public static Bitmap loadResizingSquareDrawable(Context context, String drawableName, int resizedip) {
-        Resources resources = context.getResources();
-        Bitmap imageBitmap = BitmapFactory.decodeResource(resources, resources.getIdentifier(drawableName, "drawable",
-                context.getPackageName()));
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap,
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, resizedip, resources.getDisplayMetrics()),
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, resizedip, resources.getDisplayMetrics()), false);
-        return resizedBitmap;
-    }
 }

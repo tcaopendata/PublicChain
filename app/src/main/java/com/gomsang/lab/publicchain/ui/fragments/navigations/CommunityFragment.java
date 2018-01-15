@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 
 import com.gomsang.lab.publicchain.R;
 import com.gomsang.lab.publicchain.databinding.FragmentCommunityBinding;
+import com.gomsang.lab.publicchain.libs.Constants;
+import com.gomsang.lab.publicchain.ui.fragments.ArticlesFragment;
+import com.gomsang.lab.publicchain.ui.fragments.ChatFragment;
 
 import javax.annotation.Nonnull;
 
@@ -69,7 +72,16 @@ public class CommunityFragment extends Fragment {
 
         @Override
         public Fragment getItem(int i) {
-            return ArticlesFragment.newInstance(pageTitles[i]);
+            switch (i){
+                case 0:
+                    return ArticlesFragment.newInstance(Constants.BOARDSORT_BILLS);
+                case 1:
+                    return ArticlesFragment.newInstance(Constants.BOARDSORT_USERCAMPAIGNS);
+                case 2:
+                    return ChatFragment.newInstance(Constants.CHATCHANNEL_COMMUNITY);
+
+            }
+            return null;
         }
 
         @Override
